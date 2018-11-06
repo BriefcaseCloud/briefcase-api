@@ -1,0 +1,11 @@
+{
+  "indexes": [
+    {
+      "collectionId": "auth",
+      "fields": [
+        { "fieldPath": "token", "mode": "ASCENDING" },
+        { "fieldPath": "created", "mode": "DESCENDING" }
+      ]
+    }
+  ]
+}
