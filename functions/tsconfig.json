@@ -5,7 +5,15 @@
     "noImplicitReturns": true,
     "outDir": "lib",
     "sourceMap": true,
-    "target": "es6"
+    "target": "es6",
+    "baseUrl": "src/",
+    "paths": {
+      "*": [
+        "*",
+        "api/*",
+        "modules/*"
+      ]
+    }
   },
   "compileOnSave": true,
   "include": [
