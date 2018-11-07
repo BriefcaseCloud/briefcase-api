@@ -1,4 +1,6 @@
 language: node_js
+before_install:
+- cd functions
 install:
 - npm install
 script:
