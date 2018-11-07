@@ -5,6 +5,6 @@ import * as functions from "firebase-functions";
 
 admin.initializeApp(functions.config().firebase);
 
-import api from 'api';
+import api from './api';
 
 exports.api = functions.https.onRequest(api);

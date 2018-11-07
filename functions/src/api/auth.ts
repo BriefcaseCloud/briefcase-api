@@ -2,7 +2,7 @@ import * as express from "express";
 // The Firebase Admin SDK to access the Firebase Realtime Database.
 import * as admin from "firebase-admin";
 // Token library
-import * as AuthToken from "AuthToken";
+import * as AuthToken from "../modules/AuthToken";
 
 // This is the router which will be imported in our
 // api hub (the index.ts which will be sent to Firebase Functions).
