@@ -13,23 +13,35 @@ authRouter.post("/", async function verifyUser(
   req: express.Request,
   res: express.Response
 ) {
-  const { id, password } = req.body;
+  const { username, password } = req.body;
 
-  // get user with id
+  // get user with username
   db.collection("users")
-    .where("id", "==", `${id}`)
+    .where("username", "==", `${username}`)
     .get()
-    .then((qsnapshot: FirebaseFirestore.QuerySnapshot) =>
-      qsnapshot.docs[qsnapshot.size - 1].data()
-    )
+    .then((qsnapshot: FirebaseFirestore.QuerySnapshot) => {
+      if (qsnapshot.docs[qsnapshot.size - 1] === undefined) return undefined
+      else return qsnapshot.docs[qsnapshot.size - 1].data()
+    })
     .then(record => {
       if (record === undefined) {
         // if no matching record, respond 400
-        res.status(400).send("No user with ID available");
+        res.status(400).send("No user with username available");
       } else if (password === record.password) {
         // if password match, save token to auth collection
-        AuthToken.createToken(id)
+        AuthToken.createToken(username)
           .then(newToken => {
+            db.collection("tokens").doc(username).set({
+              token: newToken,
+              created: Date.now(),
+            })
+            .then(function() {
+                console.log(`Token created and saved for ${username}`);
+            })
+            .catch(function(error) {
+                console.error(`Error writing token for ${username} with error: ${error}`)
+                throw error
+            });
             // if successful, respond 200 with token
             res.status(200).send(JSON.stringify({ token: newToken }));
           })
