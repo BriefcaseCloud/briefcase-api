@@ -1,7 +1,7 @@
 // The Firebase Admin SDK to access the Firebase Realtime Database.
 import * as admin from "firebase-admin";
 const db = admin.firestore();
-import { TOKEN_EXPIRATION } from "../Consts";
+import { TOKEN_EXPIRATION } from "../constants";
 
 /*********************
  **     Storage     **
