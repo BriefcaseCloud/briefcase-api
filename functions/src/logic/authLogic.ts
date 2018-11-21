@@ -23,16 +23,15 @@ export async function verifyUser(req: express.Request, res: express.Response) {
     .getUserAuth(username)
     .then(record => {
       // 400 if no matching record
+      console.log(record)
+      console.log(password)
       if (record === null) {
         return res.status(400).send("No user with username available");
+        
         // if password match, save token to auth collection
       } else if (`${password}` === record.obj.password) {
         return usersStorage
-          .updateUser(record.id)
-          .catch(err => {
-            console.error(err);
-            return res.status(500).send("Server Error");
-          })
+          .updateUser(record)
           .then(() => authStorage.createToken(record.id))
           .then(token => res.status(200).send({ token }))
           .catch(err => {
