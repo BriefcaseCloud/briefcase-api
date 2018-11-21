@@ -1,6 +1,5 @@
 // The Firebase Admin SDK to access the Firebase Realtime Database.
 import * as admin from "firebase-admin";
-import { DocumentReference } from "@google-cloud/firestore";
 const db = admin.firestore();
 
 /*********************
@@ -31,7 +30,7 @@ export async function readUsernames() {
  */
 export async function updateUser(uuid) {
   const user = await readUser(uuid);
-  if (!user) throw "uuid is not related to any user"
+  if (!user) throw Error("uuid is not related to any user")
   return db
     .collection("users")
     .doc(`${uuid}`)
