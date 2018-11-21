@@ -1,5 +1,6 @@
 // The Firebase Admin SDK to access the Firebase Realtime Database.
 import * as admin from "firebase-admin";
+import { DocumentReference } from "@google-cloud/firestore";
 const db = admin.firestore();
 
 /*********************
@@ -10,27 +11,39 @@ const db = admin.firestore();
  * Get usernames of all platform members
  * @returns [username]
  */
-export async function getUsernames() {
+export async function readUsernames() {
     return db
       .collection("users")
       .get()
       .then((qsnapshot: FirebaseFirestore.QuerySnapshot) => {
-        if (qsnapshot.empty === undefined) return [];
-        // FIXME: this will NOT scale
-        const usernames = [];
-        qsnapshot.forEach((qdsnapshot: FirebaseFirestore.QueryDocumentSnapshot) =>
-          usernames.push(qdsnapshot.data().username)
+        if (qsnapshot.empty) return [];
+        // FIXME: this might not scale
+        return qsnapshot.docs.map((qdsnapshot: FirebaseFirestore.QueryDocumentSnapshot) => 
+           qdsnapshot.data().username
         );
-        return usernames;
       });
   }
+
+/**
+ * Update user object
+ * @param uuid
+ * @returns user object
+ */
+export async function updateUser(uuid) {
+  const user = await readUser(uuid);
+  if (!user) throw "uuid is not related to any user"
+  return db
+    .collection("users")
+    .doc(`${uuid}`)
+    .set({"username": user.username, "last_login": Date.now()})
+}
 
 /**
  * Get user object
  * @param uuid
  * @returns user object
  */
-export async function getUser(uuid) {
+export async function readUser(uuid) {
     return db
       .collection("users")
       .doc(`${uuid}`)
