@@ -55,6 +55,8 @@ export async function createToken(uuid) {
  * @returns bool
  */
 export async function isTokenValid(token, uuid) {
+  if (!uuid) return false
+  
   return db
     .collection("auth")
     .doc(`${uuid}`)

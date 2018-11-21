@@ -15,7 +15,8 @@ export default async function withAuthMiddleware(req, res, next) {
         return res.status(400).send("No token passed")
     }
     const uuid = await authStorage.lookupUuid(req.body.token)
-    if (!uuid) return res.status(401).send("Token does not match")
+    if (!authStorage.isTokenValid(req.body.token, uuid))
+        return res.status(401).send("Token does not match")
     req.body.uuid = uuid
     next()
 }
