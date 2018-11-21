@@ -28,13 +28,14 @@ export async function readUsernames() {
  * @param uuid
  * @returns user object
  */
-export async function updateUser(uuid) {
-  const user = await readUser(uuid);
-  if (!user) throw Error("uuid is not related to any user")
+export async function updateUser(record) {
+  const user = await readUser(record.id);
+//   The culprite here for not creating a token and throwing the 500 error, maybe just log that a new user was created? - Dylan
+//   if (!user) throw Error("uuid is not related to any user")
   return db
     .collection("users")
-    .doc(`${uuid}`)
-    .set({"username": user.username, "last_login": Date.now()})
+    .doc(`${record.id}`)
+    .set({username: record.obj.username, last_login: Date.now()},{ merge: true })
 }
 
 /**
