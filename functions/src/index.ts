@@ -22,8 +22,7 @@ app.use(withAuthMiddleware)
 app.use("/users", usersRouter);
 // app.use("/projects", projectsRouter);
 
-// Again, lets be nice and help the poor wandering servers, any requests to /api
-// that are not /api/users will result in 404.
+// Any unmatched base route will result in 404
 app.get("*", async (req: express.Request, res: express.Response) => {
   res.status(404).send("This route does not exist.");
 });
