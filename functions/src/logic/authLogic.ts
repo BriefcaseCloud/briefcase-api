@@ -2,6 +2,7 @@
 import * as express from "express";
 // Internal Dependencies
 import * as authStorage from "../storage/authStorage";
+import * as usersStorage from "../storage/usersStorage";
 
 /*********************
  **      Logic      **
@@ -18,7 +19,6 @@ import * as authStorage from "../storage/authStorage";
 export async function verifyUser(req: express.Request, res: express.Response) {
   const { username, password } = req.body;
 
-  // get user with username
   authStorage
     .getUserAuth(username)
     .then(record => {
@@ -26,7 +26,9 @@ export async function verifyUser(req: express.Request, res: express.Response) {
       if (record === null) {
         return res.status(400).send("No user with username available");
         // if password match, save token to auth collection
-      } else if (password === record.obj.password) {
+      } else if (`${password}` === record.obj.password) {
+        usersStorage
+          .updateUser(record.id)
         return authStorage
           .createToken(record.id)
           .then((token) => res.status(200).send({token}))

@@ -21,9 +21,10 @@ export async function getUserAuth(username) {
     .then((qsnapshot: FirebaseFirestore.QuerySnapshot) => {
       console.log(qsnapshot.size)
       if (qsnapshot.empty) return null;
-      else return {
-        id: qsnapshot.docs[qsnapshot.size - 1].id,
-        obj: qsnapshot.docs[qsnapshot.size - 1].data()
+      const qdsnapshot = qsnapshot.docs[qsnapshot.size - 1]
+      return {
+        id: qdsnapshot.id,
+        obj: qdsnapshot.data()
       };
     });
 }
@@ -78,13 +79,10 @@ export async function isTokenValid(token, uuid) {
 export async function lookupUuid(token) {
   return db
     .collection("auth")
-    .where("token/tkid", "==", `${token}`)
+    .where("token.tkid", "==", `${token}`)
     .get()
     .then((qsnapshot: FirebaseFirestore.QuerySnapshot) => {
       if (qsnapshot.empty) return null;
-      return qsnapshot.docs[qsnapshot.size - 1];
+      return qsnapshot.docs[qsnapshot.size - 1].id;
     })
-    .then(
-      (qdsnapshot: FirebaseFirestore.QueryDocumentSnapshot) => qdsnapshot.id
-    );
 }
