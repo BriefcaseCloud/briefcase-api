@@ -10,11 +10,12 @@ import * as authStorage from "../storage/authStorage";
  * @param next 
  */
 export default async function withAuthMiddleware(req, res, next) {
-    if (res.body.token === undefined) {
+    if (req.body === undefined || req.body.token === undefined) {
         console.error("No token passed to route requiring auth")
-        throw "No token passed to route requiring auth"
+        return res.status(400).send("No token passed")
     }
-    const uuid = await authStorage.lookupUuid(res.body.token)
+    const uuid = await authStorage.lookupUuid(req.body.token)
+    if (!uuid) return res.status(401).send("Token does not match")
     req.body.uuid = uuid
     next()
 }
