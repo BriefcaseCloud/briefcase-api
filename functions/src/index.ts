@@ -3,12 +3,13 @@ import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
 import * as express from "express";
 import * as bodyParser from "body-parser";
+admin.initializeApp(functions.config().firebase);
+
 // Internal Dependencies
-import withAuthMiddleware from "middleware/withAuth";
+import withAuthMiddleware from "./middleware/withAuth";
 import { authRouter } from "./api/authApi";
 import { usersRouter } from "./api/usersApi";
 
-admin.initializeApp(functions.config().firebase);
 const app = express();
 
 // https://expressjs.com/en/advanced/best-practice-security.html#at-a-minimum-disable-x-powered-by-header
