@@ -18,8 +18,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use("/auth", authRouter);
-app.use(withAuthMiddleware)
 app.use("/users", usersRouter);
+app.use(withAuthMiddleware)
 // app.use("/projects", projectsRouter);
 
 // Any unmatched base route will result in 404
@@ -28,6 +28,5 @@ app.get("*", async (req: express.Request, res: express.Response) => {
 });
 
 export default app;
-
 
 exports.api = functions.https.onRequest(app);
