@@ -26,9 +26,9 @@ export async function verifyUser(req: express.Request, res: express.Response) {
       if (record === null) {
         return res.status(400).send("No user with username available");
         // if password match, save token to auth collection
-      } else if (password === record.password) {
+      } else if (password === record.obj.password) {
         return authStorage
-          .createToken(username)
+          .createToken(record.id)
           .then((token) => res.status(200).send({token}))
           .catch(err => {
             console.error(err);

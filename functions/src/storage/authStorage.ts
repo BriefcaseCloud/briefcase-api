@@ -11,7 +11,7 @@ import { TOKEN_EXPIRATION } from "../constants";
  * Get user auth object
  * @description Used for password or token checking
  * @param username
- * @returns null | user auth obj
+ * @returns null | {id, obj: user_auth_obj}
  */
 export async function getUserAuth(username) {
   return db
@@ -19,8 +19,12 @@ export async function getUserAuth(username) {
     .where("username", "==", `${username}`)
     .get()
     .then((qsnapshot: FirebaseFirestore.QuerySnapshot) => {
+      console.log(qsnapshot.size)
       if (qsnapshot.empty) return null;
-      else return qsnapshot.docs[qsnapshot.size - 1].data();
+      else return {
+        id: qsnapshot.docs[qsnapshot.size - 1].id,
+        obj: qsnapshot.docs[qsnapshot.size - 1].data()
+      };
     });
 }
 
@@ -35,7 +39,7 @@ export async function createToken(uuid) {
   return db
     .collection("auth")
     .doc(`${uuid}`)
-    .set({ token: { tkid: `${token}`, created: time } })
+    .update({ "token.tkid": `${token}`, "token.created": time })
     .then(() => token)
     .catch(err => {
       console.error("error saving token: ", err);
