@@ -1,25 +1,23 @@
-// The Firebase Admin SDK to access the Firebase Realtime Database.
+// External Dependencies
 import * as admin from "firebase-admin";
-// The Firebase Functions library
 import * as functions from "firebase-functions";
-
-admin.initializeApp(functions.config().firebase);
-
 import * as express from "express";
 import * as bodyParser from "body-parser";
-
-// Routes
+// Internal Dependencies
+import withAuthMiddleware from "middleware/withAuth";
 import { authRouter } from "./api/authApi";
 import { usersRouter } from "./api/usersApi";
-// import { projectsRouter } from "./api/projectsApi";
 
+admin.initializeApp(functions.config().firebase);
 const app = express();
+
 // https://expressjs.com/en/advanced/best-practice-security.html#at-a-minimum-disable-x-powered-by-header
 app.disable("x-powered-by");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use("/auth", authRouter);
+app.use(withAuthMiddleware)
 app.use("/users", usersRouter);
 // app.use("/projects", projectsRouter);
 
