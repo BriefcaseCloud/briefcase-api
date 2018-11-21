@@ -23,8 +23,6 @@ export async function verifyUser(req: express.Request, res: express.Response) {
     .getUserAuth(username)
     .then(record => {
       // 400 if no matching record
-      console.log(record)
-      console.log(password)
       if (record === null) {
         return res.status(400).send("No user with username available");
         
