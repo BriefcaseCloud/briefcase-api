@@ -1,0 +1,33 @@
+// External Dependencies
+import * as express from "express";
+// Internal Dependencies
+import * as usersStorage from "../storage/usersStorage";
+
+/*********************
+ **      Logic      **
+*********************/
+
+/**
+ * Get usernames of all platform users
+ * @param req - express request object
+ * @param res - express response object
+ */
+export async function getUsernames(req: express.Request, res: express.Response){
+    usersStorage.getUsernames().catch(err => {
+      console.log(err);
+      res.status(500).send("Server Error");
+    });
+}
+
+/**
+ * Get project ids the user is a part of
+ * @param req - express request object
+ * @param req.body - request body
+ * @param req.body.token - authentication token
+ * @param res - express response object
+ * @returns [pid] (array of project ids)
+ */
+export async function getUserProjects(req: express.Request, res: express.Response) {
+  return null
+}
+  
