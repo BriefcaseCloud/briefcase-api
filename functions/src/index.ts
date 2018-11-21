@@ -10,7 +10,8 @@ import * as bodyParser from "body-parser";
 
 // Routes
 import { authRouter } from "./api/authApi";
-import { projectsRouter } from "./api/projectsApi";
+import { usersRouter } from "./api/usersApi";
+// import { projectsRouter } from "./api/projectsApi";
 
 const app = express();
 // https://expressjs.com/en/advanced/best-practice-security.html#at-a-minimum-disable-x-powered-by-header
@@ -18,9 +19,9 @@ app.disable("x-powered-by");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// Any requests to /api/users will be routed to the user router!
 app.use("/auth", authRouter);
-app.use("/projects", projectsRouter);
+app.use("/users", usersRouter);
+// app.use("/projects", projectsRouter);
 
 // Again, lets be nice and help the poor wandering servers, any requests to /api
 // that are not /api/users will result in 404.
