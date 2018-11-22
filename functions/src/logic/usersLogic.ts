@@ -24,18 +24,3 @@ export async function getUsernames(
       return res.status(500).send("Server Error");
     });
 }
-
-/**
- * Get project ids the user is a part of
- * @param req - express request object
- * @param req.body - request body
- * @param req.body.token - authentication token
- * @param res - express response object
- * @returns [pid] (array of project ids)
- */
-export async function getUserProjects(
-  req: express.Request,
-  res: express.Response
-) {
-  return null;
-}

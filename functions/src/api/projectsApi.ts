@@ -1,19 +1,20 @@
-// // express router
-// import * as express from "express";
-// // The Firebase Admin SDK to access the Firebase Realtime Database.
-// import * as admin from "firebase-admin";
-// // Token library
-// import * as AuthToken from "../modules/AuthToken";
+// External Dependencies
+import * as express from "express";
+// Internal Dependencies
+import  * as projectsLogic from "../logic/projectsLogic"
+import {usersRouter} from "./usersApi";
 
-// // This is the router which will be imported in our
-// // api hub (the index.ts which will be sent to Firebase Functions).
-// export let projectsRouter = express.Router();
-// const db = admin.firestore();
+// Router to be used in the index.ts (sent to firebase functions as api)
+export let projectsRouter = express.Router();
 
-// projectsRouter.get("/", async function verifyUser(
-//   req: express.Request,
-//   res: express.Response
-// ) {
-//     db.collection("projects")
-//         .where("collaborators", "array-contains", )
-// });
+/*********************
+ **       API       **
+ *********************/
+
+
+projectsRouter.get("/", projectsLogic.getProjects);
+
+// Intercept un-matched routes,
+projectsRouter.get("*", async (req: express.Request, res: express.Response) => {
+    res.status(404).send("This route does not exist.");
+});

@@ -9,6 +9,7 @@ admin.initializeApp(functions.config().firebase);
 import withAuthMiddleware from "./middleware/withAuth";
 import { authRouter } from "./api/authApi";
 import { usersRouter } from "./api/usersApi";
+import { projectsRouter } from "./api/projectsApi";
 
 const app = express();
 
@@ -19,8 +20,8 @@ app.use(bodyParser.json());
 
 app.use("/auth", authRouter);
 app.use("/users", usersRouter);
-app.use(withAuthMiddleware)
-// app.use("/projects", projectsRouter);
+app.use("/projects", projectsRouter);
+app.use(withAuthMiddleware);
 
 // Any unmatched base route will result in 404
 app.get("*", async (req: express.Request, res: express.Response) => {
