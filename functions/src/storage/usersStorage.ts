@@ -10,7 +10,7 @@ const db = admin.firestore();
  * Get usernames of all platform members
  * @returns [username]
  */
-export async function readUsernames() {
+export async function readUsernames(): Promise<Array<String>> {
     return db
       .collection("users")
       .get()
@@ -22,6 +22,43 @@ export async function readUsernames() {
         );
       });
   }
+
+/**
+ * Create user object
+ * @param username
+ * @param password
+ * @returns user's new uuid
+ */
+export async function createUser(username, password) {
+  return db
+    .collection("users")
+    .add({username, projects: []})
+    .then(docRef => {console.log(docRef.id); return docRef.id})
+}
+
+  /**
+ * Get user object
+ * @param uuid
+ * @returns user object
+ */
+export async function readUser(uuid) {
+  return db
+    .collection("users")
+    .doc(`${uuid}`)
+    .get()
+    .then((dsnapshot: FirebaseFirestore.DocumentSnapshot) => dsnapshot.data())
+}
+
+/**
+ * Delete user object
+ * @param uuid
+ */
+export async function deleteUser(uuid) {
+  return db
+    .collection("users")
+    .doc(uuid)
+    .delete()
+}
 
 /**
  * Update user object
@@ -37,16 +74,3 @@ export async function updateUser(record) {
     .doc(`${record.id}`)
     .set({username: record.obj.username, last_login: Date.now()},{ merge: true })
 }
-
-/**
- * Get user object
- * @param uuid
- * @returns user object
- */
-export async function readUser(uuid) {
-    return db
-      .collection("users")
-      .doc(`${uuid}`)
-      .get()
-      .then((dsnapshot: FirebaseFirestore.DocumentSnapshot) => dsnapshot.data())
-  }

@@ -8,12 +8,25 @@ import { TOKEN_EXPIRATION } from "../constants";
  *********************/
 
 /**
- * Get user auth object
+ * Create user auth object
+ * @param uuid
+ * @param username
+ * @param password
+ */
+export async function createUser(uuid, username, password) {
+  return db
+    .collection("auth")
+    .doc(uuid)
+    .set({username, password})
+}
+
+/**
+ * Read user auth object
  * @description Used for password or token checking
  * @param username
  * @returns null | {id, obj: user_auth_obj}
  */
-export async function getUserAuth(username) {
+export async function readUser(username) {
   return db
     .collection("auth")
     .where("username", "==", `${username}`)
@@ -27,6 +40,17 @@ export async function getUserAuth(username) {
         obj: qdsnapshot.data()
       };
     });
+}
+
+/**
+ * Delete user auth object
+ * @param uuid
+ */
+export async function deleteUser(uuid) {
+  return db
+    .collection("auth")
+    .doc(uuid)
+    .delete()
 }
 
 /**

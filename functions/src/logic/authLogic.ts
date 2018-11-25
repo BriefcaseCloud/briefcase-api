@@ -20,7 +20,7 @@ export async function verifyUser(req: express.Request, res: express.Response) {
   const { username, password } = req.body;
 
   authStorage
-    .getUserAuth(username)
+    .readUser(username)
     .then(record => {
       // 400 if no matching record
       if (record === null) {
