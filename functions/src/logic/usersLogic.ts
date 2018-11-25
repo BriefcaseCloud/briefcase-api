@@ -40,7 +40,7 @@ export async function addUser(
     .readUsernames()
     .then(usernames => usernames.includes(username))
     .then(exists => {
-      if (exists) throw "Username exists"
+      if (exists) throw Error("Username exists")
       return usersStorage.createUser(username, password)
     })
     .then(uuid => authStorage.createUser(uuid, username, password))
