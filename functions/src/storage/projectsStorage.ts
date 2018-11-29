@@ -7,7 +7,7 @@ const db = admin.firestore();
  *********************/
 
 export async function createProject(project) {
-  const docRef = db.collection("projects").doc("template");
+  const docRef = db.collection("projects").doc();
   return docRef.set(project.details).then(() => {
     project.usecases.forEach(usecase => {
       docRef

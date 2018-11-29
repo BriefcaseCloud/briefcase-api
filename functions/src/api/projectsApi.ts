@@ -11,10 +11,11 @@ export let projectsRouter = express.Router();
  **       API       **
  *********************/
 
-projectsRouter.get("/", projectsLogic.getProjects);
+
 projectsRouter.post("/",projectsLogic.createProjects);
 
 projectsRouter.get("/template", projectsLogic.getTemplate);
+projectsRouter.get("/", projectsLogic.getProjects);
 
 // Intercept un-matched routes,
 projectsRouter.get("*", async (req: express.Request, res: express.Response) => {

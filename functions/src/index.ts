@@ -10,6 +10,8 @@ import withAuthMiddleware from "./middleware/withAuth";
 import { authRouter } from "./api/authApi";
 import { usersRouter } from "./api/usersApi";
 import { projectsRouter } from "./api/projectsApi";
+// import { updateUserProjects} from "./storage/usersStorage"
+import {updateFunction} from "./dbListener/projectsListener"
 
 const app = express();
 
@@ -23,6 +25,7 @@ app.use("/users", usersRouter);
 app.use("/projects", projectsRouter);
 app.use(withAuthMiddleware);
 
+
 // Any unmatched base route will result in 404
 app.get("*", async (req: express.Request, res: express.Response) => {
   res.status(404).send("This route does not exist.");
@@ -31,3 +34,5 @@ app.get("*", async (req: express.Request, res: express.Response) => {
 export default app;
 
 exports.api = functions.https.onRequest(app);
+
+exports.updateUser = updateFunction

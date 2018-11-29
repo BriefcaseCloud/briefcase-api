@@ -74,3 +74,18 @@ export async function updateUser(record) {
     .doc(`${record.id}`)
     .set({username: record.obj.username, last_login: Date.now()},{ merge: true })
 }
+
+/**
+ * Update user object
+ * @param uuid
+ * @returns user object
+ */
+export async function updateUserProjects(change) {
+    const user = await readUser(change.id);
+    user.projects.push(change.project)
+    console.log("here")
+    return db
+      .collection("users")
+      .doc(`${change.id}`)
+      .set(user,{ merge: true })
+  }

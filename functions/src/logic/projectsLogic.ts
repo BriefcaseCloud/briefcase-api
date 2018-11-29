@@ -25,8 +25,9 @@ export async function getProjects(
     req: express.Request,
     res: express.Response
 ) {
+    console.log(req.query.uuid)
     return projectsStorage
-        .getProjects(req.body.uuid)
+        .getProjects(req.query.uuid)
         .then(projects => res.status(200).send({ projects }))
         .catch(err => {
             console.log(err);

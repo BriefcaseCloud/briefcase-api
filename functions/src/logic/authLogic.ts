@@ -31,7 +31,7 @@ export async function verifyUser(req: express.Request, res: express.Response) {
         return usersStorage
           .updateUser(record)
           .then(() => authStorage.createToken(record.id))
-          .then(token => res.status(200).send({ token }))
+          .then(token => res.status(200).send({ token,id: record.id }))
           .catch(err => {
             console.error(err);
             return res.status(500).send("Server Error");
