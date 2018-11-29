@@ -8,6 +8,7 @@ export const updateFunction = functions.firestore.document('/projects/{projectid
 .onWrite(async (change, context) => {
     console.log("here")
     let userChange = {}
+    console.log(change.after.data())
     const newUsers = change.after.data().details.users;
     const oldUsers = change.after.data().details.users;
     if(oldUsers && newUsers.length != oldUsers.length) {
