@@ -5,7 +5,7 @@ import * as functions from "firebase-functions";
 import * as usersStorage from "../storage/usersStorage";
 
 export const updateFunction = functions.firestore.document('/projects/{projectid}')
-.onWrite(async (change, context) => {
+.onWrite((change, context) => {
     console.log("here")
     let userChange = {}
     console.log(change.after.data())
@@ -15,5 +15,7 @@ export const updateFunction = functions.firestore.document('/projects/{projectid
         const newestUser = newUsers[newUsers.length -1].user
         userChange = {id: newestUser, project: context.params.projectid} 
     }
-    await usersStorage.updateUserProjects(userChange)
+    usersStorage.updateUserProjects(userChange).then((response)=> {
+        return response;
+    })
 });
