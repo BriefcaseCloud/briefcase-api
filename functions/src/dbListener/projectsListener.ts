@@ -6,18 +6,22 @@ import * as usersStorage from "../storage/usersStorage";
 
 export const updateFunction = functions.firestore.document('/projects/{projectid}')
 .onWrite(async (change, context) => {
-    // console.log("here")
     let userChange = {}
-    // const newUsersData = change.after.data()
-    // const oldUsersData = change.before.data()
-    // console.log(newUsersData.details.user)
-    const newUsers = change.after.data().users;
-    const oldUsers = change.before.data().users;
-    console.log("kjfjsdk")
-    if(oldUsers && newUsers.length !== oldUsers.length) {
+    const newUsers = change.after.exists ? change.after.data().users : false;
+    const oldUsers = change.before.exists ? change.after.data().users : false;
+    if(!newUsers){
+        console.log('welp, we arnt there yet');
+        //should probably add this at some point or soemthing is gona break
+    }else if(!oldUsers){
         const newestUser = newUsers[newUsers.length -1].user
         userChange = {id: newestUser, project: context.params.projectid} 
+        const updatedUser = await usersStorage.updateUserProjects(userChange)
+        return updatedUser;
+    } else if(newUsers.length !== oldUsers.length) {
+        const newestUser = newUsers[newUsers.length -1].user
+        userChange = {id: newestUser, project: context.params.projectid} 
+        const updatedUser = await usersStorage.updateUserProjects(userChange)
+        return updatedUser;
     }
-    const updatedUser = await usersStorage.updateUserProjects(userChange)
-    return updatedUser;
+    return null
 });
