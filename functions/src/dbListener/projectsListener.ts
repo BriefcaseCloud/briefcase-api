@@ -6,11 +6,13 @@ import * as usersStorage from "../storage/usersStorage";
 
 export const updateFunction = functions.firestore.document('/projects/{projectid}')
 .onWrite((change, context) => {
-    console.log("here")
+    // console.log("here")
     let userChange = {}
-    console.log(change.after.data())
-    const newUsers = change.after.data().details.users;
-    const oldUsers = change.after.data().details.users;
+    // const newUsersData = change.after.data()
+    // const oldUsersData = 
+    // console.log(newUsersData.details.user)
+    const newUsers = change.after.data().users;
+    const oldUsers = change.after.data().users;
     if(oldUsers && newUsers.length != oldUsers.length) {
         const newestUser = newUsers[newUsers.length -1].user
         userChange = {id: newestUser, project: context.params.projectid} 
