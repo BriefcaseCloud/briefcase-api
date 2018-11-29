@@ -83,7 +83,6 @@ export async function updateUser(record) {
 export async function updateUserProjects(change) {
     const user = await readUser(change.id);
     user.projects.push(change.project)
-    console.log("here")
     return db
       .collection("users")
       .doc(`${change.id}`)

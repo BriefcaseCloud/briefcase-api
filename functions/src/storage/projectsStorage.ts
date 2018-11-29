@@ -6,7 +6,7 @@ const db = admin.firestore();
  **     Storage     **
  *********************/
 
-export async function createProject(project) {
+export function createProject(project) {
   const docRef = db.collection("projects").doc();
   return docRef.set(project.details).then(() => {
     project.usecases.forEach(usecase => {
@@ -21,26 +21,38 @@ export async function createProject(project) {
   });
 }
 
+// export async function getProjects(uuid) {
+//   const projects = [];
+//   const singleproject: any = {};
+//   const userProjectsList = await getUserProjectsList(uuid);
+//   const promises = userProjectsList.map((project) => {
+//     return getProjectDetails(project)
+//       .then(data => {
+//         singleproject.details = data;
+//         return getProjectUseCases(project);
+//       })
+//       .then(useCases => {
+//         singleproject.usecases = useCases;
+//         projects.push(singleproject);
+//       });
+//   });
+//   return Promise.all(promises).then(() => {
+//     // console.log(projects)
+//     return projects;
+//   });
+// }
+
 export async function getProjects(uuid) {
-  const projects = [];
-  const singleproject: any = {};
-  const userProjectsList = await getUserProjectsList(uuid);
-  const promises = userProjectsList.map(project => {
-    return getProjectDetails(project)
-      .then(data => {
-        singleproject.details = data;
-        return getProjectUseCases(project);
-      })
-      .then(useCases => {
-        singleproject.usecases = useCases;
-        projects.push(singleproject);
-      });
-  });
-  return Promise.all(promises).then(() => {
-    // console.log(projects)
+    var projects = [];
+    const userProjectsList = await getUserProjectsList(uuid);
+    for(var project in userProjectsList){
+        var singleproject: any = {};
+        singleproject.details  = await getProjectDetails(userProjectsList[project]);
+        singleproject.useCases = await getProjectUseCases(userProjectsList[project]);
+        projects.push(singleproject)
+    }
     return projects;
-  });
-}
+  }
 
 export async function getTemplate() {
   const singleproject: any = {};
@@ -58,7 +70,7 @@ export async function getTemplate() {
     });
 }
 
-export async function getUserProjectsList(uuid) {
+export function getUserProjectsList(uuid) {
   return db
     .collection("users")
     .doc(uuid)
