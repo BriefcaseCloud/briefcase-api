@@ -41,7 +41,7 @@ export async function removeProjects(
 ) {
     // console.log(req.query.uuid)
     return projectsStorage
-        .deleteProjects(req.query.puid)
+        .deleteProjects(req.body.puid)
         .then(() => res.status(200).send({success: true}))
         .catch(err => {
             console.log(err);

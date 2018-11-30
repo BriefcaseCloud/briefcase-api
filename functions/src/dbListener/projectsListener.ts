@@ -11,7 +11,7 @@ export const updateFunction = functions.firestore.document('/projects/{projectid
     const oldUsers = change.before.exists ? change.after.data().users : false;
     if(!newUsers){
         console.log('welp, we arnt there yet');
-        //should probably add this at some point or soemthing is gona break
+        oldUsers
     }else if(!oldUsers){
         const newestUser = newUsers[newUsers.length -1].user
         userChange = {id: newestUser, project: context.params.projectid} 
