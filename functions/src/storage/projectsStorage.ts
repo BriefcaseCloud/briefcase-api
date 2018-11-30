@@ -24,10 +24,10 @@ export function createProject(project) {
 }
 
 export async function getProjects(uuid) {
-  var projects = []
+  const projects = []
   const userProjectsList = await getUserProjectsList(uuid)
-  for (var project in userProjectsList) {
-    var singleproject: any = {}
+  for (const project in userProjectsList) {
+    const singleproject: any = {}
     singleproject.details = await getProjectDetails(userProjectsList[project])
     singleproject.useCases = await getProjectUseCases(userProjectsList[project])
     singleproject.details.puid = userProjectsList[project]
