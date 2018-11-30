@@ -40,13 +40,16 @@ export async function deleteProjects(puid) {
     console.log(
         `User has requested to delete path projects/${puid}`
       );
-    usecaseStorage.deleteAllUseCases(puid)
+    return usecaseStorage.deleteAllUseCases(puid)
     .then(() => {
         return db
         .collection('projects')
         .doc(`${puid}`)
         .delete()
-    })
+    }).catch(err => {
+        console.log(err);
+        throw err;
+      });
     
 
 }
