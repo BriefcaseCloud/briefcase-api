@@ -10,6 +10,7 @@ import withAuthMiddleware from "./middleware/withAuth";
 import { authRouter } from "./api/authApi";
 import { usersRouter } from "./api/usersApi";
 import { projectsRouter } from "./api/projectsApi";
+import { usecaseRouter } from "./api/usecaseApi";
 // import { updateUserProjects} from "./storage/usersStorage"
 import {updateFunction} from "./dbListener/projectsListener"
 
@@ -20,9 +21,11 @@ app.disable("x-powered-by");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+
 app.use("/auth", authRouter);
 app.use("/users", usersRouter);
 app.use("/projects", projectsRouter);
+app.use("/usecase", usecaseRouter);
 app.use(withAuthMiddleware);
 
 

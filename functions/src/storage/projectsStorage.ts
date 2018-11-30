@@ -2,6 +2,7 @@
 import * as admin from "firebase-admin";
 const db = admin.firestore();
 import * as firebase_tools from "firebase-tools";
+import * as usecaseStorage from "./usecaseStorage"
 
 /*********************
  **     Storage     **
@@ -22,27 +23,6 @@ export function createProject(project) {
   });
 }
 
-// export async function getProjects(uuid) {
-//   const projects = [];
-//   const singleproject: any = {};
-//   const userProjectsList = await getUserProjectsList(uuid);
-//   const promises = userProjectsList.map((project) => {
-//     return getProjectDetails(project)
-//       .then(data => {
-//         singleproject.details = data;
-//         return getProjectUseCases(project);
-//       })
-//       .then(useCases => {
-//         singleproject.usecases = useCases;
-//         projects.push(singleproject);
-//       });
-//   });
-//   return Promise.all(promises).then(() => {
-//     // console.log(projects)
-//     return projects;
-//   });
-// }
-
 export async function getProjects(uuid) {
     var projects = [];
     const userProjectsList = await getUserProjectsList(uuid);
@@ -50,7 +30,8 @@ export async function getProjects(uuid) {
         var singleproject: any = {};
         singleproject.details  = await getProjectDetails(userProjectsList[project]);
         singleproject.useCases = await getProjectUseCases(userProjectsList[project]);
-        projects.push(singleproject)
+        singleproject.details.puid = userProjectsList[project];
+        projects.push(singleproject);
     }
     return projects;
 }
@@ -59,7 +40,7 @@ export async function deleteProjects(puid) {
     console.log(
         `User has requested to delete path projects/${puid}`
       );
-    deleteAllUseCases(puid)
+    usecaseStorage.deleteAllUseCases(puid)
     .then(() => {
         return db
         .collection('projects')
@@ -68,13 +49,6 @@ export async function deleteProjects(puid) {
     })
     
 
-}
-
-export async function deleteAllUseCases(puid){
-    const path = `projects/${puid}/usecases`;
-    const snapshot = await db.collection(path).get();
-    return snapshot.docs.map(doc => doc.ref.delete())
-    
 }
 
 

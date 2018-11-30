@@ -70,3 +70,4 @@ export async function removeUser(
       return res.status(500).send("Server Error");
     });
 }
+
