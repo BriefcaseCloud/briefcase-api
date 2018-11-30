@@ -1,8 +1,8 @@
 // External Dependencies
-import * as express from "express";
+import * as express from 'express'
 // Internal Dependencies
-import * as authStorage from "../storage/authStorage";
-import * as usersStorage from "../storage/usersStorage";
+import * as authStorage from '../storage/authStorage'
+import * as usersStorage from '../storage/usersStorage'
 
 /*********************
  **      Logic      **
@@ -17,32 +17,32 @@ import * as usersStorage from "../storage/usersStorage";
  * @param res - express response object
  */
 export async function verifyUser(req: express.Request, res: express.Response) {
-  const { username, password } = req.body;
+  const { username, password } = req.body
 
   authStorage
     .readUser(username)
     .then(record => {
       // 400 if no matching record
       if (record === null) {
-        return res.status(400).send("No user with username available");
-        
+        return res.status(400).send('No user with username available')
+
         // if password match, save token to auth collection
       } else if (`${password}` === record.obj.password) {
         return usersStorage
           .updateUser(record)
           .then(() => authStorage.createToken(record.id))
-          .then(token => res.status(200).send({ token,id: record.id }))
+          .then(token => res.status(200).send({ token, id: record.id }))
           .catch(err => {
-            console.error(err);
-            return res.status(500).send("Server Error");
-          });
+            console.error(err)
+            return res.status(500).send('Server Error')
+          })
         // 401 since password doesn't match
       } else {
-        return res.status(401).send("invalid password");
+        return res.status(401).send('invalid password')
       }
     })
     .catch(err => {
-      console.error(err);
-      return res.status(500).send("Server Error");
-    });
+      console.error(err)
+      return res.status(500).send('Server Error')
+    })
 }

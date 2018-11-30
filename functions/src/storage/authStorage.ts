@@ -1,7 +1,7 @@
 // The Firebase Admin SDK to access the Firebase Realtime Database.
-import * as admin from "firebase-admin";
-const db = admin.firestore();
-import { TOKEN_EXPIRATION } from "../constants";
+import * as admin from 'firebase-admin'
+const db = admin.firestore()
+import { TOKEN_EXPIRATION } from '../constants'
 
 /*********************
  **     Storage     **
@@ -15,9 +15,9 @@ import { TOKEN_EXPIRATION } from "../constants";
  */
 export async function createUser(uuid, username, password) {
   return db
-    .collection("auth")
+    .collection('auth')
     .doc(uuid)
-    .set({username, password})
+    .set({ username, password })
 }
 
 /**
@@ -28,18 +28,18 @@ export async function createUser(uuid, username, password) {
  */
 export async function readUser(username) {
   return db
-    .collection("auth")
-    .where("username", "==", `${username}`)
+    .collection('auth')
+    .where('username', '==', `${username}`)
     .get()
     .then((qsnapshot: FirebaseFirestore.QuerySnapshot) => {
       console.log(qsnapshot.size)
-      if (qsnapshot.empty) return null;
+      if (qsnapshot.empty) return null
       const qdsnapshot = qsnapshot.docs[qsnapshot.size - 1]
       return {
         id: qdsnapshot.id,
-        obj: qdsnapshot.data()
-      };
-    });
+        obj: qdsnapshot.data(),
+      }
+    })
 }
 
 /**
@@ -48,7 +48,7 @@ export async function readUser(username) {
  */
 export async function deleteUser(uuid) {
   return db
-    .collection("auth")
+    .collection('auth')
     .doc(uuid)
     .delete()
 }
@@ -59,17 +59,17 @@ export async function deleteUser(uuid) {
  * @returns token
  */
 export async function createToken(uuid) {
-  const token = Date.now();
-  const time = Date.now();
+  const token = Date.now()
+  const time = Date.now()
   return db
-    .collection("auth")
+    .collection('auth')
     .doc(`${uuid}`)
-    .update({ "token.tkid": `${token}`, "token.created": time })
+    .update({ 'token.tkid': `${token}`, 'token.created': time })
     .then(() => token)
     .catch(err => {
-      console.error("error saving token: ", err);
-      throw err;
-    });
+      console.error('error saving token: ', err)
+      throw err
+    })
 }
 
 /**
@@ -80,9 +80,9 @@ export async function createToken(uuid) {
  */
 export async function isTokenValid(token, uuid) {
   if (!uuid) return false
-  
+
   return db
-    .collection("auth")
+    .collection('auth')
     .doc(`${uuid}`)
     .get()
     .then((dsnapshot: FirebaseFirestore.DocumentSnapshot) => dsnapshot.data())
@@ -91,11 +91,11 @@ export async function isTokenValid(token, uuid) {
         record.token === token &&
         record.created + TOKEN_EXPIRATION >= Date.now()
       ) {
-        return true;
+        return true
       } else {
-        return false;
+        return false
       }
-    });
+    })
 }
 
 /**
@@ -104,11 +104,11 @@ export async function isTokenValid(token, uuid) {
  */
 export async function lookupUuid(token) {
   return db
-    .collection("auth")
-    .where("token.tkid", "==", `${token}`)
+    .collection('auth')
+    .where('token.tkid', '==', `${token}`)
     .get()
     .then((qsnapshot: FirebaseFirestore.QuerySnapshot) => {
-      if (qsnapshot.empty) return null;
-      return qsnapshot.docs[qsnapshot.size - 1].id;
+      if (qsnapshot.empty) return null
+      return qsnapshot.docs[qsnapshot.size - 1].id
     })
 }

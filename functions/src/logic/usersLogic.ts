@@ -1,8 +1,8 @@
 // External Dependencies
-import * as express from "express";
+import * as express from 'express'
 // Internal Dependencies
-import * as usersStorage from "../storage/usersStorage";
-import * as authStorage from "../storage/authStorage";
+import * as usersStorage from '../storage/usersStorage'
+import * as authStorage from '../storage/authStorage'
 
 /*********************
  **      Logic      **
@@ -21,9 +21,9 @@ export async function getUsernames(
     .readUsernames()
     .then(usernames => res.status(200).send({ usernames }))
     .catch(err => {
-      console.log(err);
-      return res.status(500).send("Server Error");
-    });
+      console.log(err)
+      return res.status(500).send('Server Error')
+    })
 }
 
 /**
@@ -31,24 +31,21 @@ export async function getUsernames(
  * @param req - express request object
  * @param res - express response object
  */
-export async function addUser(
-  req: express.Request,
-  res: express.Response
-) {
-  const {username, password} = req.body
+export async function addUser(req: express.Request, res: express.Response) {
+  const { username, password } = req.body
   return usersStorage
     .readUsernames()
     .then(usernames => usernames.includes(username))
     .then(exists => {
-      if (exists) throw Error("Username exists")
+      if (exists) throw Error('Username exists')
       return usersStorage.createUser(username, password)
     })
     .then(uuid => authStorage.createUser(uuid, username, password))
     .then(() => res.status(200).send(`User ${username} created`))
     .catch(err => {
-      console.log(err);
-      return res.status(500).send("Server Error");
-    });
+      console.log(err)
+      return res.status(500).send('Server Error')
+    })
 }
 
 /**
@@ -56,18 +53,14 @@ export async function addUser(
  * @param req - express request object
  * @param res - express response object
  */
-export async function removeUser(
-  req: express.Request,
-  res: express.Response
-) {
-  const {uuid} = req.params
+export async function removeUser(req: express.Request, res: express.Response) {
+  const { uuid } = req.params
   return usersStorage
     .deleteUser(uuid)
     .then(() => authStorage.deleteUser(uuid))
     .then(() => res.status(200).send(`User ${uuid} deleted`))
     .catch(err => {
-      console.log(err);
-      return res.status(500).send("Server Error");
-    });
+      console.log(err)
+      return res.status(500).send('Server Error')
+    })
 }
-

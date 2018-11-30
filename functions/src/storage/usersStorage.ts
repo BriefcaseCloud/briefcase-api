@@ -1,6 +1,6 @@
 // The Firebase Admin SDK to access the Firebase Realtime Database.
-import * as admin from "firebase-admin";
-const db = admin.firestore();
+import * as admin from 'firebase-admin'
+const db = admin.firestore()
 
 /*********************
  **     Storage     **
@@ -11,17 +11,18 @@ const db = admin.firestore();
  * @returns [username]
  */
 export async function readUsernames(): Promise<Array<String>> {
-    return db
-      .collection("users")
-      .get()
-      .then((qsnapshot: FirebaseFirestore.QuerySnapshot) => {
-        if (qsnapshot.empty) return [];
-        // FIXME: this might not scale
-        return qsnapshot.docs.map((qdsnapshot: FirebaseFirestore.QueryDocumentSnapshot) => 
-           qdsnapshot.data().username
-        );
-      });
-  }
+  return db
+    .collection('users')
+    .get()
+    .then((qsnapshot: FirebaseFirestore.QuerySnapshot) => {
+      if (qsnapshot.empty) return []
+      // FIXME: this might not scale
+      return qsnapshot.docs.map(
+        (qdsnapshot: FirebaseFirestore.QueryDocumentSnapshot) =>
+          qdsnapshot.data().username
+      )
+    })
+}
 
 /**
  * Create user object
@@ -31,19 +32,22 @@ export async function readUsernames(): Promise<Array<String>> {
  */
 export async function createUser(username, password) {
   return db
-    .collection("users")
-    .add({username, projects: []})
-    .then(docRef => {console.log(docRef.id); return docRef.id})
+    .collection('users')
+    .add({ username, projects: [] })
+    .then(docRef => {
+      console.log(docRef.id)
+      return docRef.id
+    })
 }
 
-  /**
+/**
  * Get user object
  * @param uuid
  * @returns user object
  */
 export async function readUser(uuid) {
   return db
-    .collection("users")
+    .collection('users')
     .doc(`${uuid}`)
     .get()
     .then((dsnapshot: FirebaseFirestore.DocumentSnapshot) => dsnapshot.data())
@@ -55,7 +59,7 @@ export async function readUser(uuid) {
  */
 export async function deleteUser(uuid) {
   return db
-    .collection("users")
+    .collection('users')
     .doc(uuid)
     .delete()
 }
@@ -66,13 +70,16 @@ export async function deleteUser(uuid) {
  * @returns user object
  */
 export async function updateUser(record) {
-  const user = await readUser(record.id);
-//   The culprite here for not creating a token and throwing the 500 error, maybe just log that a new user was created? - Dylan
-//   if (!user) throw Error("uuid is not related to any user")
+  const user = await readUser(record.id)
+  //   The culprite here for not creating a token and throwing the 500 error, maybe just log that a new user was created? - Dylan
+  //   if (!user) throw Error("uuid is not related to any user")
   return db
-    .collection("users")
+    .collection('users')
     .doc(`${record.id}`)
-    .set({username: record.obj.username, last_login: Date.now()},{ merge: true })
+    .set(
+      { username: record.obj.username, last_login: Date.now() },
+      { merge: true }
+    )
 }
 
 /**
@@ -81,10 +88,10 @@ export async function updateUser(record) {
  * @returns user object
  */
 export async function updateUserProjects(change) {
-    const user = await readUser(change.id);
-    user.projects.push(change.project)
-    return db
-      .collection("users")
-      .doc(`${change.id}`)
-      .set(user,{ merge: true })
-  }
+  const user = await readUser(change.id)
+  user.projects.push(change.project)
+  return db
+    .collection('users')
+    .doc(`${change.id}`)
+    .set(user, { merge: true })
+}
