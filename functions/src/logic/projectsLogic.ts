@@ -25,10 +25,24 @@ export async function getProjects(
     req: express.Request,
     res: express.Response
 ) {
-    console.log(req.query.uuid)
+    // console.log(req.query.uuid)
     return projectsStorage
         .getProjects(req.query.uuid)
         .then(projects => res.status(200).send({ projects }))
+        .catch(err => {
+            console.log(err);
+            return res.status(500).send("Server Error");
+        });
+}
+
+export async function removeProjects(
+    req: express.Request,
+    res: express.Response
+) {
+    // console.log(req.query.uuid)
+    return projectsStorage
+        .deleteProjects(req.query.puid)
+        .then(() => res.status(200).send({success: true}))
         .catch(err => {
             console.log(err);
             return res.status(500).send("Server Error");

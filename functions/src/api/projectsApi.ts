@@ -16,6 +16,7 @@ projectsRouter.post("/",projectsLogic.createProjects);
 
 projectsRouter.get("/template", projectsLogic.getTemplate);
 projectsRouter.get("/", projectsLogic.getProjects);
+projectsRouter.delete("/", projectsLogic.removeProjects);
 
 // Intercept un-matched routes,
 projectsRouter.get("*", async (req: express.Request, res: express.Response) => {
