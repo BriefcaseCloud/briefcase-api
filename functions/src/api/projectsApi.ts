@@ -1,24 +1,23 @@
 // External Dependencies
-import * as express from "express";
+import * as express from 'express'
 // Internal Dependencies
-import  * as projectsLogic from "../logic/projectsLogic"
-import {usersRouter} from "./usersApi";
+import * as projectsLogic from '../logic/projectsLogic'
+import { usersRouter } from './usersApi'
 
 // Router to be used in the index.ts (sent to firebase functions as api)
-export let projectsRouter = express.Router();
+export let projectsRouter = express.Router()
 
 /*********************
  **       API       **
  *********************/
 
+projectsRouter.post('/', projectsLogic.createProjects)
 
-projectsRouter.post("/",projectsLogic.createProjects);
-
-projectsRouter.get("/template", projectsLogic.getTemplate);
-projectsRouter.get("/", projectsLogic.getProjects);
-projectsRouter.delete("/", projectsLogic.removeProjects);
+projectsRouter.get('/template', projectsLogic.getTemplate)
+projectsRouter.get('/', projectsLogic.getProjects)
+projectsRouter.delete('/', projectsLogic.removeProjects)
 
 // Intercept un-matched routes,
-projectsRouter.get("*", async (req: express.Request, res: express.Response) => {
-    res.status(404).send("This route does not exist.");
-});
+projectsRouter.get('*', async (req: express.Request, res: express.Response) => {
+  res.status(404).send('This route does not exist.')
+})
