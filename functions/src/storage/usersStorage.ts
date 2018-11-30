@@ -88,10 +88,19 @@ export async function updateUser(record) {
  * @returns user object
  */
 export async function updateUserProjects(change) {
-  const user = await readUser(change.id)
-  user.projects.push(change.project)
-  return db
+    return db
     .collection('users')
     .doc(`${change.id}`)
-    .set(user, { merge: true })
+    .update({
+        users: FirebaseFirestore.FieldValue.arrayUnion(change.project)
+    })
+}
+
+export async function removeUserProjects(change) {
+    return db
+    .collection('users')
+    .doc(`${change.id}`)
+    .update({
+        users: FirebaseFirestore.FieldValue.arrayRemove(change.project)
+    })
 }

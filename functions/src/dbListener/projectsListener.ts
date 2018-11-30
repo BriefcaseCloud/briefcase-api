@@ -9,10 +9,15 @@ export const updateFunction = functions.firestore
   .onWrite(async (change, context) => {
     let userChange = {}
     const newUsers = change.after.exists ? change.after.data().users : false
-    const oldUsers = change.before.exists ? change.after.data().users : false
+    const oldUsers = change.before.exists ? change.before.data().users : false
     if (!newUsers) {
-      console.log('welp, we arnt there yet')
-      //should probably add this at some point or soemthing is gona break
+    //   console.log('welp, we arnt there yet')
+      for(var users in oldUsers){
+        userChange = { id: oldUsers[users].user, project: context.params.projectid }
+        const removeUser = await usersStorage.removeUserProjects(userChange)
+      }
+      return change.before
+      
     } else if (!oldUsers) {
       const newestUser = newUsers[newUsers.length - 1].user
       userChange = { id: newestUser, project: context.params.projectid }
