@@ -93,7 +93,7 @@ export async function updateUserProjects(change) {
     .collection('users')
     .doc(`${change.id}`)
     .update({
-        users: firebase.firestore.FieldValue.arrayUnion(change.project)
+        users: firebase.firestore.FieldValue.arrayUnion(`${change.project}`)
     })
 }
 
@@ -102,6 +102,6 @@ export async function removeUserProjects(change) {
     .collection('users')
     .doc(`${change.id}`)
     .update({
-        users: firebase.firestore.FieldValue.arrayRemove(change.project)
+        users: firebase.firestore.FieldValue.arrayRemove(`${change.project}`)
     })
 }
