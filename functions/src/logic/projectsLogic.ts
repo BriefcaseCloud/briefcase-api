@@ -13,7 +13,7 @@ export async function createProjects(
 ) {
   return projectsStorage
     .createProject(req.body.project)
-    .then(() => res.status(200).send({ success: true }))
+    .then((id) => res.status(200).send({ puid: id }))
     .catch(err => {
       console.log(err)
       return res.status(500).send('Server Error')

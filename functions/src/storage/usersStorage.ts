@@ -1,5 +1,6 @@
 // The Firebase Admin SDK to access the Firebase Realtime Database.
 import * as admin from 'firebase-admin'
+import * as firebase from 'firebase'
 const db = admin.firestore()
 
 /*********************
@@ -92,7 +93,7 @@ export async function updateUserProjects(change) {
     .collection('users')
     .doc(`${change.id}`)
     .update({
-        users: FirebaseFirestore.FieldValue.arrayUnion(change.project)
+        users: firebase.firestore.FieldValue.arrayUnion(change.project)
     })
 }
 
@@ -101,6 +102,6 @@ export async function removeUserProjects(change) {
     .collection('users')
     .doc(`${change.id}`)
     .update({
-        users: FirebaseFirestore.FieldValue.arrayRemove(change.project)
+        users: firebase.firestore.FieldValue.arrayRemove(change.project)
     })
 }

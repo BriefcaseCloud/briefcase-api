@@ -20,6 +20,7 @@ export function createProject(project) {
           throw err
         })
     })
+    return docRef.id
   })
 }
 
