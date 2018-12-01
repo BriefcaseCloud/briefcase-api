@@ -12,22 +12,22 @@ export const updateFunction = functions.firestore
     const oldUsers = change.before.exists ? change.before.data().users : false
     if (!newUsers) {
     //   console.log('welp, we arnt there yet')
-      for(var users in oldUsers){
+      for(let users in oldUsers){
         userChange = { id: oldUsers[users].user, project: context.params.projectid }
         const removeUser = await usersStorage.removeUserProjects(userChange)
       }
-      return change.before
+    //   return change.before
       
     } else if (!oldUsers) {
       const newestUser = newUsers[newUsers.length - 1].user
       userChange = { id: newestUser, project: context.params.projectid }
       const updatedUser = await usersStorage.updateUserProjects(userChange)
-      return updatedUser
+    //   return updatedUser
     } else if (newUsers.length !== oldUsers.length) {
       const newestUser = newUsers[newUsers.length - 1].user
       userChange = { id: newestUser, project: context.params.projectid }
       const updatedUser = await usersStorage.updateUserProjects(userChange)
-      return updatedUser
+    //   return updatedUser
     }
-    return null
+    // return change.after
   })
