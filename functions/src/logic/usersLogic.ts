@@ -35,7 +35,7 @@ export async function addUser(req: express.Request, res: express.Response) {
   const { username, password } = req.body
   return usersStorage
     .readUsernames()
-    .then(usernames => usernames.includes(username))
+    .then(usernames => (usernames.indexOf(username) > -1))
     .then(exists => {
       if (exists) throw Error('Username exists')
       return usersStorage.createUser(username, password)
