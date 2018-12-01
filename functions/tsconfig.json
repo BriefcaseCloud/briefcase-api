@@ -6,10 +6,10 @@
     "outDir": "lib",
     "sourceMap": true,
     "target": "es6",
-    "baseUrl": "src/",
+    "baseUrl": "src/"
   },
   "compileOnSave": true,
-  "include": [
-    "src"
-  ]
+  "include": ["src"],
+  "files": ["node_modules/typescript/lib/lib.es6.d.ts"],
+  "exclude": ["node_modules"]
 }
