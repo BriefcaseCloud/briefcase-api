@@ -1,7 +1,6 @@
 import * as express from 'express'
 // Internal Dependencies
 import * as usecaseLogic from '../logic/usecaseLogic'
-import { usersRouter } from './usersApi'
 
 // Router to be used in the index.ts (sent to firebase functions as api)
 export let usecaseRouter = express.Router()
@@ -10,8 +9,8 @@ export let usecaseRouter = express.Router()
 
 // usecaseRouter.get("/template", usecaseLogic.getTemplate);
 // usecaseRouter.get("/", usecaseLogic.getUseCase);
-usecaseRouter.post('/', usecaseLogic.createUseCase)
-usecaseRouter.delete('/', usecaseLogic.removeUseCase)
+usecaseRouter.post('/', usecaseLogic.addUseCase)
+usecaseRouter.delete('/', usecaseLogic.deleteUseCase)
 
 // Intercept un-matched routes,
 usecaseRouter.get('*', async (req: express.Request, res: express.Response) => {

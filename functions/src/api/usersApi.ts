@@ -13,8 +13,8 @@ export const usersRouter = express.Router()
 // Get list of usernames
 usersRouter.get('/', usersLogic.getUsernames)
 
-// Add new user
-usersRouter.post('/', usersLogic.addUser)
+// Sign-up new user
+usersRouter.post('/', usersLogic.signupUser)
 
 // Remove existing user
 usersRouter.delete('/:uuid', usersLogic.removeUser)

@@ -13,7 +13,7 @@ import { TOKEN_EXPIRATION } from '../constants'
  * @param username
  * @param password
  */
-export async function createUser(uuid, username, password) {
+export function createUser(uuid, username, password) {
   return db
     .collection('auth')
     .doc(uuid)
@@ -26,15 +26,14 @@ export async function createUser(uuid, username, password) {
  * @param username
  * @returns null | {id, obj: user_auth_obj}
  */
-export async function readUser(username) {
+export function readUser(username) {
   return db
     .collection('auth')
     .where('username', '==', `${username}`)
     .get()
-    .then((qsnapshot: FirebaseFirestore.QuerySnapshot) => {
-      console.log(qsnapshot.size)
-      if (qsnapshot.empty) return null
-      const qdsnapshot = qsnapshot.docs[qsnapshot.size - 1]
+    .then((querySnapshot: FirebaseFirestore.QuerySnapshot) => {
+      if (querySnapshot.empty) return null
+      const qdsnapshot = querySnapshot.docs[querySnapshot.size - 1]
       return {
         id: qdsnapshot.id,
         obj: qdsnapshot.data(),
@@ -46,7 +45,7 @@ export async function readUser(username) {
  * Delete user auth object
  * @param uuid
  */
-export async function deleteUser(uuid) {
+export function deleteUser(uuid) {
   return db
     .collection('auth')
     .doc(uuid)
@@ -58,7 +57,7 @@ export async function deleteUser(uuid) {
  * @param uuid - unique user identifier
  * @returns token
  */
-export async function createToken(uuid) {
+export function createToken(uuid) {
   const token = Date.now()
   const time = Date.now()
   return db
@@ -78,7 +77,7 @@ export async function createToken(uuid) {
  * @param uuid - unique user identifier
  * @returns bool
  */
-export async function isTokenValid(token, uuid) {
+export function isTokenValid(token, uuid) {
   if (!uuid) return false
 
   return db
@@ -107,8 +106,8 @@ export async function lookupUuid(token) {
     .collection('auth')
     .where('token.tkid', '==', `${token}`)
     .get()
-    .then((qsnapshot: FirebaseFirestore.QuerySnapshot) => {
-      if (qsnapshot.empty) return null
-      return qsnapshot.docs[qsnapshot.size - 1].id
+    .then((querySnapshot: FirebaseFirestore.QuerySnapshot) => {
+      if (querySnapshot.empty) return null
+      return querySnapshot.docs[querySnapshot.size - 1].id
     })
 }
