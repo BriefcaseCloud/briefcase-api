@@ -1,13 +1,17 @@
 // External Dependencies
 import * as admin from 'firebase-admin'
 const db = admin.firestore()
-import * as firebase_tools from 'firebase-tools'
 import * as usecaseStorage from './usecaseStorage'
 
 /*********************
  **     Storage     **
  *********************/
 
+ /**
+ * Creates new project with details
+ * @param project - project contents to create with
+ * @returns project id
+ */
 export function createProject(project) {
   const docRef = db.collection('projects').doc()
   return docRef.set(project.details).then(() => {
@@ -16,7 +20,7 @@ export function createProject(project) {
         .collection('usecases')
         .add(usecase)
         .catch(err => {
-          console.log(err)
+          console.error(err)
           throw err
         })
     })
@@ -24,23 +28,32 @@ export function createProject(project) {
   })
 }
 
+/**
+ * Gets list of projects for use
+ * @param uuid - user identifier to get projects for
+ * @returns [project]
+ */
 export async function getProjects(uuid) {
   const projects = []
-  const userProjectsList = await getUserProjectsList(uuid)
+  const userProjectsList = await getUserProjectsList(`${uuid}`)
   for (const project in userProjectsList) {
-    const singleproject: any = {}
-    singleproject.details = await getProjectDetails(userProjectsList[project])
-    singleproject.useCases = await getProjectUseCases(userProjectsList[project])
-    singleproject.details.puid = userProjectsList[project]
-    projects.push(singleproject)
+    const singleProject: any = {}
+    singleProject.details = await getProjectDetails(userProjectsList[project])
+    singleProject.useCases = await getProjectUseCases(userProjectsList[project])
+    singleProject.details.puid = userProjectsList[project]
+    projects.push(singleProject)
   }
   return projects
 }
 
-export async function deleteProjects(puid) {
+/**
+ * Delete project with puid
+ * @param puid - project identifer
+ */
+export  function deleteProjects(puid) {
   console.log(`User has requested to delete path projects/${puid}`)
   return usecaseStorage
-    .deleteAllUseCases(puid)
+    .deleteAllUseCases(`${puid}`)
     .then(() => {
       return db
         .collection('projects')
@@ -48,39 +61,54 @@ export async function deleteProjects(puid) {
         .delete()
     })
     .catch(err => {
-      console.log(err)
+      console.error(err)
       throw err
     })
 }
 
-export async function getTemplate() {
-  const singleproject: any = {}
+/**
+ * Gets project template
+ * @param project - project contents to create with
+ * @returns project id
+ */
+export  function getTemplate() {
+  const singleProject: any = {}
 
   return getProjectDetails('template')
     .then(data => {
-      singleproject.details = data
+      singleProject.details = data
       return getProjectUseCases('template')
     })
     .then(useCases => {
-      singleproject.usecases = useCases
+      singleProject.usecases = useCases
     })
     .then(() => {
-      return singleproject
+      return singleProject
     })
 }
 
+/**
+ * Get list of projects for user
+ * @param uuid - user id to get projects for
+ * @returns [project]
+ */
 export function getUserProjectsList(uuid) {
   return db
     .collection('users')
-    .doc(uuid)
+    .doc(`${uuid}`)
     .get()
     .then(doc => doc.data().projects)
 }
 
-export async function getProjectUseCases(projID) {
+/**
+ * Get list of usecases for project
+ * @param puid - project id to get usecases for
+ * @returns [usecase]
+ */
+export function getProjectUseCases(puid) {
   return db
     .collection('projects')
-    .doc(projID)
+    .doc(`${puid}`)
     .collection('usecases')
     .get()
     .then(cases => {
@@ -88,10 +116,15 @@ export async function getProjectUseCases(projID) {
     })
 }
 
-export async function getProjectDetails(projID) {
+/**
+ * Get details of projects
+ * @param puid - user id to get projects for
+ * @returns project details
+ */
+export function getProjectDetails(puid) {
   return db
     .collection('projects')
-    .doc(projID)
+    .doc(`${puid}`)
     .get()
     .then(doc => doc.data())
 }

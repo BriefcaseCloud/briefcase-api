@@ -1,7 +1,5 @@
 // The Firebase Admin SDK to access the Firebase Realtime Database.
 import * as admin from 'firebase-admin'
-import { DocumentSnapshot } from '@google-cloud/firestore';
-// import * as firebase from 'firebase'
 const db = admin.firestore()
 
 /*********************
