@@ -29,13 +29,9 @@ export async function verifyUser(req: express.Request, res: express.Response) {
         // if password match, save token to auth collection
       } else if (`${password}` === record.obj.password) {
         return usersStorage
-          .updateUser(record)
+          .updateUser(record.id)
           .then(() => authStorage.createToken(record.id))
           .then(token => res.status(200).send({ token, id: record.id }))
-          .catch(err => {
-            console.error(err)
-            return res.status(500).send('Server Error')
-          })
         // 401 since password doesn't match
       } else {
         return res.status(401).send('invalid password')

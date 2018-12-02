@@ -1,5 +1,6 @@
 // The Firebase Admin SDK to access the Firebase Realtime Database.
 import * as admin from 'firebase-admin'
+import { DocumentSnapshot } from '@google-cloud/firestore';
 // import * as firebase from 'firebase'
 const db = admin.firestore()
 
@@ -11,16 +12,15 @@ const db = admin.firestore()
  * Get usernames of all platform members
  * @returns [username]
  */
-export async function readUsernames(): Promise<Array<String>> {
+export function readUsernames(): Promise<Array<String>> {
   return db
     .collection('users')
     .get()
-    .then((qsnapshot: FirebaseFirestore.QuerySnapshot) => {
-      if (qsnapshot.empty) return []
-      // FIXME: this might not scale
-      return qsnapshot.docs.map(
-        (qdsnapshot: FirebaseFirestore.QueryDocumentSnapshot) =>
-          qdsnapshot.data().username
+    .then((querySnapshot: FirebaseFirestore.QuerySnapshot) => {
+      if (querySnapshot.empty) return []
+      return querySnapshot.docs.map(
+        (doc: FirebaseFirestore.QueryDocumentSnapshot) =>
+          doc.data().username
       )
     })
 }
@@ -28,15 +28,14 @@ export async function readUsernames(): Promise<Array<String>> {
 /**
  * Create user object
  * @param username
- * @param password
  * @returns user's new uuid
  */
-export async function createUser(username, password) {
+export function createUser(username) {
   return db
     .collection('users')
     .add({ username, projects: [] })
     .then(docRef => {
-      console.log(docRef.id)
+      console.log(`created user: ${username} with id: ${docRef.id}`)
       return docRef.id
     })
 }
@@ -46,19 +45,19 @@ export async function createUser(username, password) {
  * @param uuid
  * @returns user object
  */
-export async function readUser(uuid) {
+export function readUser(uuid) {
   return db
     .collection('users')
     .doc(`${uuid}`)
     .get()
-    .then((dsnapshot: FirebaseFirestore.DocumentSnapshot) => dsnapshot.data())
+    .then((doc: FirebaseFirestore.DocumentSnapshot) => doc.data())
 }
 
 /**
  * Delete user object
  * @param uuid
  */
-export async function deleteUser(uuid) {
+export function deleteUser(uuid) {
   return db
     .collection('users')
     .doc(uuid)
@@ -70,38 +69,45 @@ export async function deleteUser(uuid) {
  * @param uuid
  * @returns user object
  */
-export async function updateUser(record) {
-  const user = await readUser(record.id)
-  //   The culprite here for not creating a token and throwing the 500 error, maybe just log that a new user was created? - Dylan
-  //   if (!user) throw Error("uuid is not related to any user")
+export function updateUser(uuid) {
   return db
     .collection('users')
-    .doc(`${record.id}`)
-    .set(
-      { username: record.obj.username, last_login: Date.now() },
-      { merge: true }
-    )
+    .doc(`${uuid}`)
+    .get()
+    .then((documentSnapshot: FirebaseFirestore.DocumentSnapshot) => {
+      if (documentSnapshot.exists) return documentSnapshot.ref
+      else {
+        console.log(`User with uuid: ${uuid} not found`)
+        return null
+      }
+    })
+    .then(doc => doc.update({ last_login: Date.now() }))
 }
 
 /**
- * Update user object
- * @param uuid
- * @returns user object
+ * Update user projects
+ * @param uuid - unique user identifier
+ * @param puid - unique project identifier
  */
-export async function createUserProjects(change) {
+export async function addUserProject(uuid, puid) {
     return db
     .collection('users')
-    .doc(`${change.id}`)
+    .doc(`${uuid}`)
     .update({
-        projects: admin.firestore.FieldValue.arrayUnion(`${change.project}`)
+        projects: admin.firestore.FieldValue.arrayUnion(`${puid}`)
     })
 }
 
-export async function removeUserProjects(change) {
+/**
+ * Update user projects
+ * @param uuid - unique user identifier
+ * @param puid - unique project identifier
+ */
+export async function removeUserProject(uuid, puid) {
     return db
     .collection('users')
-    .doc(`${change.id}`)
+    .doc(`${uuid}`)
     .update({
-        projects: admin.firestore.FieldValue.arrayRemove(`${change.project}`)
+        projects: admin.firestore.FieldValue.arrayRemove(`${puid}`)
     })
 }

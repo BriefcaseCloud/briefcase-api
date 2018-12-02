@@ -27,23 +27,33 @@ export async function getUsernames(
 }
 
 /**
- * Add new user
+ * Sign-up new user
  * @param req - express request object
+ * @param req.body - request body
+ * @param req.body.username - username
+ * @param req.body.password - password
  * @param res - express response object
  */
-export async function addUser(req: express.Request, res: express.Response) {
+export async function signupUser(req: express.Request, res: express.Response) {
   const { username, password } = req.body
   return usersStorage
     .readUsernames()
     .then(usernames => (usernames.indexOf(username) > -1))
     .then(exists => {
-      if (exists) throw Error('Username exists')
-      return usersStorage.createUser(username, password)
+      if (exists) {
+        console.log('Username exists')
+        res.status(400).send('Username exists')
+        return null
+      }
+      else {
+        return usersStorage
+          .createUser(username)
+          .then(uuid => authStorage.createUser(uuid, username, password))
+          .then(() => res.status(200).send(`User ${username} created`))
+      }
     })
-    .then(uuid => authStorage.createUser(uuid, username, password))
-    .then(() => res.status(200).send(`User ${username} created`))
     .catch(err => {
-      console.log(err)
+      console.error(err)
       return res.status(500).send('Server Error')
     })
 }
@@ -51,6 +61,8 @@ export async function addUser(req: express.Request, res: express.Response) {
 /**
  * Remove existing user
  * @param req - express request object
+ * @param req.params - request url params
+ * @param req.params.uuid - unique user id to delete
  * @param res - express response object
  */
 export async function removeUser(req: express.Request, res: express.Response) {
@@ -60,7 +72,7 @@ export async function removeUser(req: express.Request, res: express.Response) {
     .then(() => authStorage.deleteUser(uuid))
     .then(() => res.status(200).send(`User ${uuid} deleted`))
     .catch(err => {
-      console.log(err)
+      console.error(err)
       return res.status(500).send('Server Error')
     })
 }
