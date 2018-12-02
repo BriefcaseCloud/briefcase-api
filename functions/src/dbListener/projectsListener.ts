@@ -21,12 +21,12 @@ export const updateFunction = functions.firestore
     } else if (!oldUsers) {
       const newestUser = newUsers[newUsers.length - 1].user
       userChange = { id: newestUser, project: context.params.projectid }
-      const updatedUser = await usersStorage.updateUserProjects(userChange)
+      const updatedUser = await usersStorage.createUserProjects(userChange)
     //   return updatedUser
     } else if (newUsers.length !== oldUsers.length) {
       const newestUser = newUsers[newUsers.length - 1].user
       userChange = { id: newestUser, project: context.params.projectid }
-      const updatedUser = await usersStorage.updateUserProjects(userChange)
+      const updatedUser = await usersStorage.createUserProjects(userChange)
     //   return updatedUser
     }
     // return change.after

@@ -88,12 +88,12 @@ export async function updateUser(record) {
  * @param uuid
  * @returns user object
  */
-export async function updateUserProjects(change) {
+export async function createUserProjects(change) {
     return db
     .collection('users')
     .doc(`${change.id}`)
     .update({
-        users: firebase.firestore.FieldValue.arrayUnion(`${change.project}`)
+        projects: firebase.firestore.FieldValue.arrayUnion(`${change.project}`)
     })
 }
 
@@ -102,6 +102,6 @@ export async function removeUserProjects(change) {
     .collection('users')
     .doc(`${change.id}`)
     .update({
-        users: firebase.firestore.FieldValue.arrayRemove(`${change.project}`)
+        projects: firebase.firestore.FieldValue.arrayRemove(`${change.project}`)
     })
 }
