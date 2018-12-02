@@ -59,7 +59,7 @@ export function removeProject(
 ) {
     return projectsStorage
         .deleteProjects(req.body.puid)
-        .then(() => res.status(200))
+        .then(() => res.status(200).send())
         .catch(err => {
             console.error(err);
             return res.status(500).send("Server Error");
