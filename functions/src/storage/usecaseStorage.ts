@@ -17,8 +17,7 @@ export async function addUseCase(puid, usecase) {
     .collection('projects')
     .doc(puid)
     .collection('usecases')
-    .doc()
-    .set(usecase)
+    .add(usecase)
 }
 
 /**

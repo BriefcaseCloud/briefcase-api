@@ -19,7 +19,7 @@ export async function addUseCase(
   // console.log(req.query.uuid)
   return usecaseStorage
     .addUseCase(req.body.puid, req.body.usecase)
-    .then(() => res.status(200).send())
+    .then((ref) => res.status(200).send({ucid: ref.id}))
     .catch(err => {
       console.error(err)
       return res.status(500).send('Server Error')
@@ -40,7 +40,7 @@ export async function deleteUseCase(
 ) {
   // console.log(req.query.uuid)
   return usecaseStorage
-    .deleteUseCase(req.body.puid, req.body.usecaseid)
+    .deleteUseCase(req.body.puid, req.body.ucid)
     .then(() => res.status(200).send())
     .catch(err => {
       console.error(err)
