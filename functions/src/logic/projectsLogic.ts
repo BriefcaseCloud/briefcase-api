@@ -57,16 +57,9 @@ export function removeProject(
   req: express.Request,
   res: express.Response
 ) {
-<<<<<<< HEAD
-    // console.log(req.params.puid)
-    return projectsStorage
-        .deleteProjects(req.params.puid)
-        .then(() => res.status(200).send({success: true}))
-=======
     return projectsStorage
         .deleteProjects(req.body.puid)
         .then(() => res.status(200))
->>>>>>> b19e79528666c839ec4df8f98f9804a72e6e4565
         .catch(err => {
             console.error(err);
             return res.status(500).send("Server Error");
@@ -88,27 +81,13 @@ export function getTemplate(req: express.Request, res: express.Response) {
     })
 }
 
-// export async function shareProject(req: express.Request, res: express.Response) {
-//   const usersToShareTo = req.body.users;
-//   const projectId = req.body.id
-//   try{
-//     for (let index in usersToShareTo){
-//         const users = usersToShareTo[index]
-//         await projectsStorage.UpdateProjectUsers(projectId,users)
-//         await usersStorage.createUserProjects({id: users.user,project: projectId})
-//     }
-//   } catch (err) {
-//     return res.status(500).send('Server Error')
-//   }
-// }
-
 export async function shareProjects(req: express.Request, res: express.Response) {
     const usersToShareTo = req.body.users;
     const projectId = req.body.id
     return usersToShareTo.forEach(newUser => {
         projectsStorage.UpdateProjectUsers(projectId,newUser)
-        .then(() => usersStorage.createUserProjects({id: newUser.user,project: projectId}))
-        .then(() => res.status(200).send({success: true}))
+        .then(() => usersStorage.addUserProject(newUser.user,projectId))
+        .then(() => res.status(200).send())
         .catch(err => {
             console.log(err)
             return res.status(500).send('Server Error')
@@ -122,7 +101,7 @@ export async function saveProjects(
   ) {
     return projectsStorage
       .updateProject(req.body.project,req.params.puid)
-      .then(() => res.status(200).send({ success: true }))
+      .then(() => res.status(200).send())
       .catch(err => {
         console.log(err)
         return res.status(500).send('Server Error')

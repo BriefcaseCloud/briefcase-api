@@ -28,7 +28,12 @@ export function createProject(project) {
   })
 }
 
-<<<<<<< HEAD
+ /**
+ * Updates a project with new data
+ * @param project - project contents to update with
+ * @param puid - id of project to update
+ * @returns project id
+ */
 export function updateProject(project,puid) {
     delete project.details['puid']
     const docRef = db.collection('projects').doc(puid)
@@ -48,30 +53,20 @@ export function updateProject(project,puid) {
     })
   }
 
-=======
 /**
  * Gets list of projects for use
  * @param uuid - user identifier to get projects for
  * @returns [project]
  */
->>>>>>> b19e79528666c839ec4df8f98f9804a72e6e4565
 export async function getProjects(uuid) {
   const projects = []
   const userProjectsList = await getUserProjectsList(`${uuid}`)
   for (const project in userProjectsList) {
-<<<<<<< HEAD
     const singleproject: any = {}
     singleproject.details = await getProjectDetails(userProjectsList[project])
     singleproject.usecases = await getProjectUseCases(userProjectsList[project])
     singleproject.details.puid = userProjectsList[project]
     projects.push(singleproject)
-=======
-    const singleProject: any = {}
-    singleProject.details = await getProjectDetails(userProjectsList[project])
-    singleProject.useCases = await getProjectUseCases(userProjectsList[project])
-    singleProject.details.puid = userProjectsList[project]
-    projects.push(singleProject)
->>>>>>> b19e79528666c839ec4df8f98f9804a72e6e4565
   }
   return projects
 }
