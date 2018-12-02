@@ -2,6 +2,7 @@
 import * as express from 'express'
 // Internal Dependencies
 import * as projectsStorage from '../storage/projectsStorage'
+import * as usersStorage from '../storage/usersStorage'
 
 /*********************
  **      Logic      **
@@ -11,6 +12,7 @@ export async function createProjects(
   req: express.Request,
   res: express.Response
 ) {
+    console.log(req.body)
   return projectsStorage
     .createProject(req.body.project)
     .then((id) => res.status(200).send({ puid: id }))
@@ -35,9 +37,9 @@ export async function removeProjects(
   req: express.Request,
   res: express.Response
 ) {
-    // console.log(req.query.uuid)
+    // console.log(req.params.puid)
     return projectsStorage
-        .deleteProjects(req.body.puid)
+        .deleteProjects(req.params.puid)
         .then(() => res.status(200).send({success: true}))
         .catch(err => {
             console.log(err);
@@ -54,3 +56,44 @@ export async function getTemplate(req: express.Request, res: express.Response) {
       return res.status(500).send('Server Error')
     })
 }
+
+// export async function shareProject(req: express.Request, res: express.Response) {
+//   const usersToShareTo = req.body.users;
+//   const projectId = req.body.id
+//   try{
+//     for (let index in usersToShareTo){
+//         const users = usersToShareTo[index]
+//         await projectsStorage.UpdateProjectUsers(projectId,users)
+//         await usersStorage.createUserProjects({id: users.user,project: projectId})
+//     }
+//   } catch (err) {
+//     return res.status(500).send('Server Error')
+//   }
+// }
+
+export async function shareProjects(req: express.Request, res: express.Response) {
+    const usersToShareTo = req.body.users;
+    const projectId = req.body.id
+    return usersToShareTo.forEach(newUser => {
+        projectsStorage.UpdateProjectUsers(projectId,newUser)
+        .then(() => usersStorage.createUserProjects({id: newUser.user,project: projectId}))
+        .then(() => res.status(200).send({success: true}))
+        .catch(err => {
+            console.log(err)
+            return res.status(500).send('Server Error')
+        })
+    });
+}
+
+export async function saveProjects(
+    req: express.Request,
+    res: express.Response
+  ) {
+    return projectsStorage
+      .updateProject(req.body.project,req.params.puid)
+      .then(() => res.status(200).send({ success: true }))
+      .catch(err => {
+        console.log(err)
+        return res.status(500).send('Server Error')
+      })
+  }

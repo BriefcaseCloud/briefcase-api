@@ -11,11 +11,12 @@ export let projectsRouter = express.Router()
  **       API       **
  *********************/
 
-projectsRouter.post('/', projectsLogic.createProjects)
-
+projectsRouter.post('/', projectsLogic.createProjects)// body: {projects: (projectObject)}
+projectsRouter.post('/share', projectsLogic.shareProjects)//body: {id: (id of project), users: [{user: (id of user), permissions: (user permissions)}]}
 projectsRouter.get('/template', projectsLogic.getTemplate)
 projectsRouter.get('/', projectsLogic.getProjects)
-projectsRouter.delete('/', projectsLogic.removeProjects)
+projectsRouter.put('/:puid', projectsLogic.saveProjects)
+projectsRouter.delete('/:puid', projectsLogic.removeProjects)
 
 // Intercept un-matched routes,
 projectsRouter.get('*', async (req: express.Request, res: express.Response) => {

@@ -24,13 +24,32 @@ export function createProject(project) {
   })
 }
 
+export function updateProject(project,puid) {
+    delete project.details['puid']
+    const docRef = db.collection('projects').doc(puid)
+    return docRef.set(project.details).then(() => {
+      project.usecases.forEach(usecase => {
+          const newUcid = usecase.ucid
+          delete usecase['ucid']
+        docRef
+          .collection('usecases')
+          .doc(newUcid)
+          .set(usecase)
+          .catch(err => {
+            console.log(err)
+            throw err
+          })
+      })
+    })
+  }
+
 export async function getProjects(uuid) {
   const projects = []
   const userProjectsList = await getUserProjectsList(uuid)
   for (const project in userProjectsList) {
     const singleproject: any = {}
     singleproject.details = await getProjectDetails(userProjectsList[project])
-    singleproject.useCases = await getProjectUseCases(userProjectsList[project])
+    singleproject.usecases = await getProjectUseCases(userProjectsList[project])
     singleproject.details.puid = userProjectsList[project]
     projects.push(singleproject)
   }
@@ -84,7 +103,11 @@ export async function getProjectUseCases(projID) {
     .collection('usecases')
     .get()
     .then(cases => {
-      return cases.docs.map(usecase => usecase.data())
+      return cases.docs.map(usecase => {
+          var newUseCase = usecase.data()
+          newUseCase.ucid = usecase.id
+          return newUseCase
+      })
     })
 }
 
@@ -95,3 +118,21 @@ export async function getProjectDetails(projID) {
     .get()
     .then(doc => doc.data())
 }
+
+export async function UpdateProjectUsers(projID,user) {
+    return db
+      .collection('projects')
+      .doc(projID)
+      .update({
+        users: admin.firestore.FieldValue.arrayUnion(user)
+    })
+  }
+
+export async function removeProjectUsers(projID,user) {
+    return db
+      .collection('projects')
+      .doc(projID)
+      .update({
+        users: admin.firestore.FieldValue.arrayRemove(user)
+    })
+  }
