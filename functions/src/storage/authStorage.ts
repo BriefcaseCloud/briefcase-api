@@ -2,6 +2,7 @@
 import * as admin from 'firebase-admin'
 const db = admin.firestore()
 import { TOKEN_EXPIRATION } from '../constants'
+import { createAuth } from '../utils'
 
 /*********************
  **     Storage     **
@@ -17,7 +18,7 @@ export function createUser(uuid, username, password) {
   return db
     .collection('auth')
     .doc(uuid)
-    .set({ username, password })
+    .set(createAuth(username, password))
 }
 
 /**

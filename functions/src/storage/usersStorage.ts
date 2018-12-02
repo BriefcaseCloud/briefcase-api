@@ -1,6 +1,7 @@
 // The Firebase Admin SDK to access the Firebase Realtime Database.
 import * as admin from 'firebase-admin'
 const db = admin.firestore()
+import { createUser as createDefaultUser } from '../utils'
 
 /*********************
  **     Storage     **
@@ -31,7 +32,7 @@ export function readUsernames(): Promise<Array<String>> {
 export function createUser(username) {
   return db
     .collection('users')
-    .add({ username, projects: [] })
+    .add(createDefaultUser(username))
     .then(docRef => {
       console.log(`created user: ${username} with id: ${docRef.id}`)
       return docRef.id
