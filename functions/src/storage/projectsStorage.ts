@@ -51,6 +51,7 @@ export function updateProject(project,puid) {
           })
       })
     })
+    .then(() => puid)
   }
 
 /**
@@ -158,20 +159,31 @@ export function getProjectDetails(puid) {
     .then(doc => doc.data())
 }
 
-export async function UpdateProjectUsers(projID,user) {
+/**
+ * Add user to a project
+ * @param puid - project id to add user to
+ * @param user - user to add to project
+ */
+export async function addProjectUsers(puid,user) {
     return db
       .collection('projects')
-      .doc(projID)
+      .doc(puid)
       .update({
         users: admin.firestore.FieldValue.arrayUnion(user)
     })
-  }
+}
 
-export async function removeProjectUsers(projID,user) {
+/**
+ * Remove user from a project
+ * @param puid - project id to remove user from 
+ * @param user - user to remove from project
+ * @returns project details
+ */
+export async function deleteProjectUser(puid,user) {
     return db
       .collection('projects')
-      .doc(projID)
+      .doc(puid)
       .update({
         users: admin.firestore.FieldValue.arrayRemove(user)
     })
-  }
+}

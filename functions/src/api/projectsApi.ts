@@ -13,7 +13,7 @@ export let projectsRouter = express.Router()
 
 projectsRouter.post('/', projectsLogic.addProject) // body: {projects: (projectObject)}
 projectsRouter.get('/', projectsLogic.getProjects)
-projectsRouter.put('/:puid', projectsLogic.saveProjects)
+projectsRouter.put('/', projectsLogic.saveProjects)
 projectsRouter.delete('/', projectsLogic.removeProject)
 
 projectsRouter.post('/share', projectsLogic.shareProjects) //body: {id: (id of project), users: [{user: (id of user), permissions: (user permissions)}]}

@@ -19,12 +19,12 @@ export function addProject(
   req: express.Request,
   res: express.Response
 ) {
-    console.log(req.body)
+    // console.log(req.body)
   return projectsStorage
     .createProject(req.body.project)
     .then((puid) => res.status(200).send({ puid }))
     .catch(err => {
-      console.log(err)
+      console.error(err)
       return res.status(500).send('Server Error')
     })
 }
@@ -81,29 +81,41 @@ export function getTemplate(req: express.Request, res: express.Response) {
     })
 }
 
+/**
+ * share project with other users
+ * @param req - express request object
+ * @param req.body.puid project id to share
+ * @param req.body.users users to share with nad their permissions
+ * @param res - express response object
+ */
 export async function shareProjects(req: express.Request, res: express.Response) {
     const usersToShareTo = req.body.users;
-    const projectId = req.body.id
     return usersToShareTo.forEach(newUser => {
-        projectsStorage.UpdateProjectUsers(projectId,newUser)
-        .then(() => usersStorage.addUserProject(newUser.user,projectId))
+        projectsStorage.addProjectUsers(req.body.puid,newUser)
+        .then(() => usersStorage.addUserProject(newUser.user,req.body.puid))
         .then(() => res.status(200).send())
         .catch(err => {
-            console.log(err)
+            console.error(err)
             return res.status(500).send('Server Error')
         })
     });
 }
 
+/**
+ * Save project changes
+ * @param req - express request object
+ * @param req.body.project project to update
+ * @param res - express response object
+ */
 export async function saveProjects(
     req: express.Request,
     res: express.Response
   ) {
     return projectsStorage
-      .updateProject(req.body.project,req.params.puid)
+      .updateProject(req.body.project,req.body.project.details.puid)
       .then(() => res.status(200).send())
       .catch(err => {
-        console.log(err)
+        console.error(err)
         return res.status(500).send('Server Error')
       })
   }

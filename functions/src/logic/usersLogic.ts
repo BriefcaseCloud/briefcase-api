@@ -21,7 +21,7 @@ export async function getUsernames(
     .readUsernames()
     .then(usernames => res.status(200).send({ usernames }))
     .catch(err => {
-      console.log(err)
+      console.error(err)
       return res.status(500).send('Server Error')
     })
 }

@@ -1,6 +1,6 @@
 import * as express from 'express'
 // Internal Dependencies
-import * as usecaseLogic from '../logic/usecaseLogic'
+import * as usecaseLogic from '../logic/usecasesLogic'
 
 // Router to be used in the index.ts (sent to firebase functions as api)
 export let usecaseRouter = express.Router()
