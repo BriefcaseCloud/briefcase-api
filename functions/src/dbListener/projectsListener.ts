@@ -11,8 +11,8 @@ export const updateFunction = functions.firestore
     const oldUsers = change.before.exists ? change.before.data().users : false
     if (!newUsers) {
     //   console.log('welp, we arnt there yet')
-      for(let users in oldUsers){
-        const removeUser = await usersStorage.removeUserProject(oldUsers[users].user,context.params.projectid)
+      for(const users in oldUsers){
+        const removeUser = await usersStorage.removeUserProject(oldUsers[users].user, context.params.projectid)
       }
     //   return change.before
       

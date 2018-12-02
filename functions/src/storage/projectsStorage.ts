@@ -1,7 +1,7 @@
 // External Dependencies
 import * as admin from 'firebase-admin'
 const db = admin.firestore()
-import * as usecaseStorage from './usecaseStorage'
+import * as usecasesStorage from './usecasesStorage'
 
 /*********************
  **     Storage     **
@@ -34,9 +34,9 @@ export function createProject(project) {
  * @param puid - id of project to update
  * @returns project id
  */
-export function updateProject(project,puid) {
+export function updateProject(project, puid) {
     delete project.details['puid']
-    const docRef = db.collection('projects').doc(puid)
+    const docRef = db.collection('projects').doc(`${puid}`)
     return docRef.set(project.details).then(() => {
       project.usecases.forEach(usecase => {
           const newUcid = usecase.ucid
@@ -63,11 +63,11 @@ export async function getProjects(uuid) {
   const projects = []
   const userProjectsList = await getUserProjectsList(`${uuid}`)
   for (const project in userProjectsList) {
-    const singleproject: any = {}
-    singleproject.details = await getProjectDetails(userProjectsList[project])
-    singleproject.usecases = await getProjectUseCases(userProjectsList[project])
-    singleproject.details.puid = userProjectsList[project]
-    projects.push(singleproject)
+    const singleProject: any = {}
+    singleProject.details = await getProjectDetails(userProjectsList[project])
+    singleProject.usecases = await getProjectUseCases(userProjectsList[project])
+    singleProject.details.puid = userProjectsList[project]
+    projects.push(singleProject)
   }
   return projects
 }
@@ -78,7 +78,7 @@ export async function getProjects(uuid) {
  */
 export  function deleteProjects(puid) {
   console.log(`User has requested to delete path projects/${puid}`)
-  return usecaseStorage
+  return usecasesStorage
     .deleteAllUseCases(`${puid}`)
     .then(() => {
       return db
@@ -97,7 +97,7 @@ export  function deleteProjects(puid) {
  * @param project - project contents to create with
  * @returns project id
  */
-export  function getTemplate() {
+export function getTemplate() {
   const singleProject: any = {}
 
   return getProjectDetails('template')
@@ -139,7 +139,7 @@ export function getProjectUseCases(puid) {
     .get()
     .then(cases => {
       return cases.docs.map(usecase => {
-          var newUseCase = usecase.data()
+          const newUseCase = usecase.data()
           newUseCase.ucid = usecase.id
           return newUseCase
       })
@@ -164,7 +164,7 @@ export function getProjectDetails(puid) {
  * @param puid - project id to add user to
  * @param user - user to add to project
  */
-export async function addProjectUsers(puid,user) {
+export function addProjectUsers(puid,user) {
     return db
       .collection('projects')
       .doc(puid)
@@ -179,7 +179,7 @@ export async function addProjectUsers(puid,user) {
  * @param user - user to remove from project
  * @returns project details
  */
-export async function deleteProjectUser(puid,user) {
+export function deleteProjectUser(puid,user) {
     return db
       .collection('projects')
       .doc(puid)

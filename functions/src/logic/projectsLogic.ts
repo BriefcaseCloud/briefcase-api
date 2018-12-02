@@ -88,11 +88,11 @@ export function getTemplate(req: express.Request, res: express.Response) {
  * @param req.body.users users to share with nad their permissions
  * @param res - express response object
  */
-export async function shareProjects(req: express.Request, res: express.Response) {
+export function shareProjects(req: express.Request, res: express.Response) {
     const usersToShareTo = req.body.users;
     return usersToShareTo.forEach(newUser => {
-        projectsStorage.addProjectUsers(req.body.puid,newUser)
-        .then(() => usersStorage.addUserProject(newUser.user,req.body.puid))
+        projectsStorage.addProjectUsers(req.body.puid, newUser)
+        .then(() => usersStorage.addUserProject(newUser.user, req.body.puid))
         .then(() => res.status(200).send())
         .catch(err => {
             console.error(err)
@@ -104,15 +104,17 @@ export async function shareProjects(req: express.Request, res: express.Response)
 /**
  * Save project changes
  * @param req - express request object
- * @param req.body.project project to update
+ * @param req.body.project project object to update
+ * @param req.body.project.details project details object
+ * @param req.body.project.details.puid project identifier
  * @param res - express response object
  */
-export async function saveProjects(
+export function saveProjects(
     req: express.Request,
     res: express.Response
   ) {
     return projectsStorage
-      .updateProject(req.body.project,req.body.project.details.puid)
+      .updateProject(req.body.project, req.body.project.details.puid)
       .then(() => res.status(200).send())
       .catch(err => {
         console.error(err)

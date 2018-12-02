@@ -10,7 +10,7 @@ import withAuthMiddleware from './middleware/withAuth'
 import { authRouter } from './api/authApi'
 import { usersRouter } from './api/usersApi'
 import { projectsRouter } from './api/projectsApi'
-import { usecaseRouter } from './api/usecasesApi'
+import { usecasesRouter } from './api/usecasesApi'
 // import { updateUserProjects} from "./storage/usersStorage"
 import { updateFunction } from './dbListener/projectsListener'
 
@@ -24,7 +24,7 @@ app.use(bodyParser.json())
 app.use('/auth', authRouter)
 app.use('/users', usersRouter)
 app.use('/projects', projectsRouter)
-app.use('/usecases', usecaseRouter)
+app.use('/usecases', usecasesRouter)
 app.use(withAuthMiddleware)
 
 // Any unmatched base route will result in 404

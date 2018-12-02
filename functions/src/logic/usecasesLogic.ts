@@ -1,7 +1,7 @@
 // External Dependencies
 import * as express from 'express'
 // Internal Dependencies
-import * as usecaseStorage from '../storage/usecaseStorage'
+import * as usecasesStorage from '../storage/usecasesStorage'
 
 
 /**
@@ -17,7 +17,7 @@ export async function addUseCase(
   res: express.Response
 ) {
   // console.log(req.query.uuid)
-  return usecaseStorage
+  return usecasesStorage
     .addUseCase(req.body.puid, req.body.usecase)
     .then((ref) => res.status(200).send({ucid: ref.id}))
     .catch(err => {
@@ -39,7 +39,7 @@ export async function deleteUseCase(
   res: express.Response
 ) {
   // console.log(req.query.uuid)
-  return usecaseStorage
+  return usecasesStorage
     .deleteUseCase(req.body.puid, req.body.ucid)
     .then(() => res.status(200).send())
     .catch(err => {
