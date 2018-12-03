@@ -10,14 +10,11 @@ export const usersRouter = express.Router()
  **       API       **
  *********************/
 
-// Get list of usernames
 usersRouter.get('/', usersLogic.getUsernames)
-
-// Sign-up new user
 usersRouter.post('/', usersLogic.signupUser)
-
-// Remove existing user
 usersRouter.delete('/:uuid', usersLogic.removeUser)
+
+usersRouter.get('/:uuid/projects', usersLogic.getProjects)
 
 // Intercept un-matched routes,
 usersRouter.get('*', async (req: express.Request, res: express.Response) => {
