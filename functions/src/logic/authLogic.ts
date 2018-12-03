@@ -3,6 +3,7 @@ import * as express from 'express'
 // Internal Dependencies
 import * as authStorage from '../storage/authStorage'
 import * as usersStorage from '../storage/usersStorage'
+import { ROLES } from '../constants';
 
 /*********************
  **      Logic      **
@@ -31,7 +32,7 @@ export async function verifyUser(req: express.Request, res: express.Response) {
         return usersStorage
           .updateUser(record.id)
           .then(() => authStorage.createToken(record.id))
-          .then(token => res.status(200).send({ token, id: record.id }))
+          .then(token => res.status(200).send({ token, id: record.id, isAdmin: record.obj.role === ROLES.admin ? true : false }))
         // 401 since password doesn't match
       } else {
         return res.status(401).send('invalid password')
