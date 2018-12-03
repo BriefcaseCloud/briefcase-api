@@ -20,7 +20,6 @@ export async function getProject(req: express.Request, res: express.Response) {
   if (projectsStorage.projectExists(puid)) {
     return projectsStorage
       .getProjectDetails(puid)
-      .then((proj) => {console.log(proj); return proj})
       .then(project => res.status(200).send({ project }))
       .catch(err => {
         console.error(err)
@@ -42,7 +41,6 @@ export function addProject(
   req: express.Request,
   res: express.Response
 ) {
-    // console.log(req.body)
   return projectsStorage
     .createProject(req.body.project)
     .then((puid) => res.status(200).send({ puid }))
