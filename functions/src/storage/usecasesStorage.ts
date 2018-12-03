@@ -20,8 +20,9 @@ export function addUsecase(puid) {
     .collection('usecases')
     .add({})
     .then(doc => {
-      doc.set(createUsecase(doc.id))
       return doc
+        .set(createUsecase(doc.id))
+        .then(() => doc)
     })
 }
 

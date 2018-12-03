@@ -13,19 +13,22 @@ import * as usecasesStorage from './usecasesStorage'
  * @returns project id
  */
 export function createProject(project) {
+  delete project.puid
+  delete project.usecases
   const docRef = db.collection('projects').doc()
-  return docRef.set(project.details).then(() => {
-    project.usecases.forEach(usecase => {
-      docRef
-        .collection('usecases')
-        .add(usecase)
-        .catch(err => {
-          console.error(err)
-          throw err
-        })
-    })
-    return docRef.id
-  })
+  return docRef.set(project).then(() => docRef.id)
+  // .then(() => {
+  //   project.usecases.forEach(usecase => {
+  //     docRef
+  //       .collection('usecases')
+  //       .add(usecase)
+  //       .catch(err => {
+  //         console.error(err)
+  //         throw err
+  //       })
+  //   })
+  //   return docRef.id
+  // })
 }
 
  /**
@@ -35,22 +38,24 @@ export function createProject(project) {
  * @returns project id
  */
 export function updateProject(project, puid) {
-    delete project.details['puid']
+    delete project.puid
+    delete project.usecases
     const docRef = db.collection('projects').doc(`${puid}`)
-    return docRef.set(project.details).then(() => {
-      project.usecases.forEach(usecase => {
-          const newUcid = usecase.ucid
-          delete usecase['ucid']
-        docRef
-          .collection('usecases')
-          .doc(newUcid)
-          .set(usecase)
-          .catch(err => {
-            console.log(err)
-            throw err
-          })
-      })
-    })
+    return docRef.update(project)
+    // .then(() => {
+    //   project.usecases.forEach(usecase => {
+    //       const newUcid = usecase.ucid
+    //       delete usecase.ucid
+    //     docRef
+    //       .collection('usecases')
+    //       .doc(newUcid)
+    //       .set(usecase)
+    //       .catch(err => {
+    //         console.log(err)
+    //         throw err
+    //       })
+    //   })
+    // })
     .then(() => puid)
   }
 
@@ -63,10 +68,9 @@ export async function getProjects(uuid) {
   const projects = []
   const userProjectsList = await getUserProjectsList(`${uuid}`)
   for (const project in userProjectsList) {
-    const singleProject: any = {}
-    singleProject.details = await getProjectDetails(userProjectsList[project])
-    singleProject.usecases = await getProjectUseCases(userProjectsList[project])
-    singleProject.details.puid = userProjectsList[project]
+    const singleProject = await getProjectDetails(userProjectsList[project])
+    singleProject.usecases = await getProjectUsecases(userProjectsList[project])
+    singleProject.puid = userProjectsList[project]
     projects.push(singleProject)
   }
   return projects
@@ -79,7 +83,7 @@ export async function getProjects(uuid) {
 export  function deleteProjects(puid) {
   console.log(`User has requested to delete path projects/${puid}`)
   return usecasesStorage
-    .deleteAllUseCases(`${puid}`)
+    .deleteAllUsecases(`${puid}`)
     .then(() => {
       return db
         .collection('projects')
@@ -103,7 +107,7 @@ export function getTemplate() {
   return getProjectDetails('template')
     .then(data => {
       singleProject.details = data
-      return getProjectUseCases('template')
+      return getProjectUsecases('template')
     })
     .then(useCases => {
       singleProject.usecases = useCases
@@ -131,7 +135,7 @@ export function getUserProjectsList(uuid) {
  * @param puid - project id to get usecases for
  * @returns [usecase]
  */
-export function getProjectUseCases(puid) {
+export function getProjectUsecases(puid) {
   return db
     .collection('projects')
     .doc(`${puid}`)

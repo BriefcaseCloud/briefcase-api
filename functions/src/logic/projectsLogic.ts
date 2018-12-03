@@ -9,6 +9,23 @@ import * as usersStorage from '../storage/usersStorage'
  *********************/
 
 /**
+ * Get project
+ * @param req - express request object
+ * @param req.params - url params
+ * @param req.params.puid - project to get
+ * @param res - express response object
+ */
+export function getProject(req: express.Request, res: express.Response) {
+  return projectsStorage
+    .getProjects(req.query.uuid)
+    .then(projects => res.status(200).send({ projects }))
+    .catch(err => {
+      console.error(err)
+      return res.status(500).send('Server Error')
+    })
+}
+
+/**
  * Add blank project to user
  * @param req - express request object
  * @param req.body - request body
@@ -30,16 +47,21 @@ export function addProject(
 }
 
 /**
- * Get all projects for user
+ * Save project changes
  * @param req - express request object
- * @param req.query - request url query params
- * @param req.query.uuid - user to get projects for
+ * @param req.params url params
+ * @param req.params.puid url params
+ * @param req.body.project project object to update
+ * @param req.body.project.details project details object
  * @param res - express response object
  */
-export function getProjects(req: express.Request, res: express.Response) {
+export function saveProjects(
+  req: express.Request,
+  res: express.Response
+) {
   return projectsStorage
-    .getProjects(req.query.uuid)
-    .then(projects => res.status(200).send({ projects }))
+    .updateProject(req.body.project, req.params.puid)
+    .then(() => res.status(200).send())
     .catch(err => {
       console.error(err)
       return res.status(500).send('Server Error')
@@ -49,8 +71,8 @@ export function getProjects(req: express.Request, res: express.Response) {
 /**
  * Remove project
  * @param req - express request object
- * @param req.body - request url query params
- * @param req.body.puid - project id to delete
+ * @param req.params - url params
+ * @param req.params.puid - project id to delete
  * @param res - express response object
  */
 export function removeProject(
@@ -58,7 +80,7 @@ export function removeProject(
   res: express.Response
 ) {
     return projectsStorage
-        .deleteProjects(req.body.puid)
+        .deleteProjects(req.params.puid)
         .then(() => res.status(200).send())
         .catch(err => {
             console.error(err);
@@ -100,24 +122,3 @@ export function shareProjects(req: express.Request, res: express.Response) {
         })
     });
 }
-
-/**
- * Save project changes
- * @param req - express request object
- * @param req.body.project project object to update
- * @param req.body.project.details project details object
- * @param req.body.project.details.puid project identifier
- * @param res - express response object
- */
-export function saveProjects(
-    req: express.Request,
-    res: express.Response
-  ) {
-    return projectsStorage
-      .updateProject(req.body.project, req.body.project.details.puid)
-      .then(() => res.status(200).send())
-      .catch(err => {
-        console.error(err)
-        return res.status(500).send('Server Error')
-      })
-  }
