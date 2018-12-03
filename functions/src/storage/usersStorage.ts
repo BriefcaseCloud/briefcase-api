@@ -7,6 +7,11 @@ import { createUser as createDefaultUser } from '../utils'
  **     Storage     **
  *********************/
 
+
+export async function userExists(uuid) {
+  return db.collection('users').doc(`${uuid}`).get().then((doc) => doc.exists)
+}
+
 /**
  * Get usernames of all platform members
  * @returns [username]

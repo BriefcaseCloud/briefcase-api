@@ -8,6 +8,10 @@ import { createProject as createDefaultProject } from '../utils'
  **     Storage     **
  *********************/
 
+export function projectExists(puid) {
+  return db.collection('projects').doc(`${puid}`).get().then((doc) => doc.exists)
+}
+
  /**
  * Creates new project with details
  * @param uuid - user id to associate with project
@@ -16,7 +20,7 @@ import { createProject as createDefaultProject } from '../utils'
 export function createProject(uuid) {
   const docRef = db.collection('projects').doc()
   return docRef
-    .set(createDefaultProject(uuid, "", ""))
+    .set(createDefaultProject(uuid))
     .then(() => db.collection('projects').doc(docRef.id).get())
     .then((doc) => docRef.id)
 }
@@ -48,23 +52,6 @@ export function updateProject(project, puid) {
     // })
     .then(() => puid)
   }
-
-/**
- * Gets list of projects for use
- * @param uuid - user identifier to get projects for
- * @returns [project]
- */
-export async function getProjects(uuid) {
-  const projects = []
-  const userProjectsList = await getUserProjectsList(`${uuid}`)
-  for (const project in userProjectsList) {
-    const singleProject = await getProjectDetails(userProjectsList[project])
-    singleProject.usecases = await getProjectUsecases(userProjectsList[project])
-    singleProject.puid = userProjectsList[project]
-    projects.push(singleProject)
-  }
-  return projects
-}
 
 /**
  * Delete project with puid

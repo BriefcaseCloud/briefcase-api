@@ -15,14 +15,20 @@ import * as usersStorage from '../storage/usersStorage'
  * @param req.params.puid - project to get
  * @param res - express response object
  */
-export function getProject(req: express.Request, res: express.Response) {
-  return projectsStorage
-    .getProjects(req.query.uuid)
-    .then(projects => res.status(200).send({ projects }))
-    .catch(err => {
-      console.error(err)
-      return res.status(500).send('Server Error')
-    })
+export async function getProject(req: express.Request, res: express.Response) {
+  const { puid } = req.params
+  if (projectsStorage.projectExists(puid)) {
+    return projectsStorage
+      .getProjectDetails(puid)
+      .then((proj) => {console.log(proj); return proj})
+      .then(project => res.status(200).send({ project }))
+      .catch(err => {
+        console.error(err)
+        return res.status(500).send('Server Error')
+      })
+  } else {
+    return res.status(400).send(`No project with puid: ${puid}`)
+  }
 }
 
 /**

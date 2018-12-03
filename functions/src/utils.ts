@@ -23,7 +23,7 @@ export function createUserPermission(user, perm) {
   }
 }
 
-export function createProject(owner, title, users) {
+export function createProject(owner, title="", users=[]) {
   return {
     ...DEFAULT_PROJECT,
     owner,

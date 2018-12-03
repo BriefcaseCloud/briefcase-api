@@ -66,16 +66,20 @@ export function signupUser(req: express.Request, res: express.Response) {
  * @param req.params.uuid - unique user id to delete
  * @param res - express response object
  */
-export function removeUser(req: express.Request, res: express.Response) {
+export async function removeUser(req: express.Request, res: express.Response) {
   const { uuid } = req.params
-  return usersStorage
-    .deleteUser(uuid)
-    .then(() => authStorage.deleteUser(uuid))
-    .then(() => res.status(200).send(`User ${uuid} deleted`))
-    .catch(err => {
-      console.error(err)
-      return res.status(500).send('Server Error')
-    })
+  if (await usersStorage.userExists(uuid)) {
+    return usersStorage
+      .deleteUser(uuid)
+      .then(() => authStorage.deleteUser(uuid))
+      .then(() => res.status(200).send(`User ${uuid} deleted`))
+      .catch(err => {
+        console.error(err)
+        return res.status(500).send('Server Error')
+      })
+  } else {
+    return res.status(400).send(`User with ${uuid} doesn't exist`)
+  }
 }
 
 
@@ -86,38 +90,50 @@ export function removeUser(req: express.Request, res: express.Response) {
  * @param req.params.uuid - unique user id to get projects for
  * @param res - express response object
  */
-export function getProjects(req: express.Request, res: express.Response) {
+export async function getProjects(req: express.Request, res: express.Response) {
   const { uuid } = req.params
-  return usersStorage
-    .readUser(uuid)
-    .then((data) =>
-      data.projects.map((puid) => ({
-        ...projectsStorage.getProjectDetails(puid),
+  if (await usersStorage.userExists(uuid)) {
+    return usersStorage
+      .readUser(uuid)
+      .then((data) =>
+        data.projects.map(async (puid) => ({
+          ...(await projectsStorage.getProjectDetails(puid)),
+          puid
+        }))
+      )
+      .then((projectsPromises) => Promise.all(projectsPromises))
+      .then(projects => res.status(200).send({ projects }))
+      .catch(err => {
+        console.error(err)
+        return res.status(500).send('Server Error')
+      })
+  } else {
+    return res.status(400).send(`User with ${uuid} doesn't exist`)
+  }
+}
+
+/**
+ * Add project for user
+ * @param req - express request object
+ * @param req.params - request url params
+ * @param req.params.uuid - unique user id to get projects for
+ * @param res - express response object
+ */
+export async function createProject(req: express.Request, res: express.Response) {
+  const { uuid } = req.params
+  if (await usersStorage.userExists(uuid)) {
+    return projectsStorage
+      .createProject(uuid)
+      .then(async (puid) => ({
+        ...(await projectsStorage.getProjectDetails(puid)),
         puid
       }))
-    )
-    .then((projects) => res.status(200).send({projects}))
-    .catch(err => {
-      console.error(err)
-      return res.status(500).send('Server Error')
-    })
-}
-
-/**
- * Get projects for user
- * @param req - express request object
- * @param req.params - request url params
- * @param req.params.uuid - unique user id to get projects for
- * @param res - express response object
- */
-export function createProject(req: express.Request, res: express.Response) {
-  const { uuid } = req.params
-  return projectsStorage
-    .createProject(uuid)
-    .then(puid => projectsStorage.getProjectDetails(puid))
-    .then((project) => res.status(200).send({project}))
-    .catch(err => {
-      console.error(err)
-      return res.status(500).send('Server Error')
-    })
+      .then((project) => res.status(200).send({project}))
+      .catch(err => {
+        console.error(err)
+        return res.status(500).send('Server Error')
+      })
+  } else {
+    return res.status(400).send(`User with ${uuid} doesn't exist`)
+  }
 }
