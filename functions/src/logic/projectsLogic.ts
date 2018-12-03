@@ -57,16 +57,15 @@ export function addProject(
  * @param req - express request object
  * @param req.params url params
  * @param req.params.puid url params
- * @param req.body.project project object to update
- * @param req.body.project.details project details object
+ * @param req.body project body to update
  * @param res - express response object
  */
-export function saveProjects(
+export function saveProject(
   req: express.Request,
   res: express.Response
 ) {
   return projectsStorage
-    .updateProject(req.body.project, req.params.puid)
+    .updateProject(req.body, req.params.puid)
     .then(() => res.status(200).send())
     .catch(err => {
       console.error(err)

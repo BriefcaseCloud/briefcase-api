@@ -15,7 +15,7 @@ projectsRouter.post('/', projectsLogic.addProject) // body: {projects: (projectO
 
 
 projectsRouter.get('/:puid', projectsLogic.getProject)
-projectsRouter.put('/:puid', projectsLogic.saveProjects)
+projectsRouter.put('/:puid', projectsLogic.saveProject)
 projectsRouter.delete('/:puid', projectsLogic.removeProject)
 
 // projectsRouter.use('/:puid/usecases', usecasesRouter)
