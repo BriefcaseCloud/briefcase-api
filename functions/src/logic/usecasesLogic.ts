@@ -61,7 +61,7 @@ export function saveUsecase(
   res: express.Response
 ) {
   return usecasesStorage
-    .updateUsecase(req.params.puid, req.params.ucid, req.body.usecase)
+    .updateUsecase(req.params.puid, req.params.ucid, req.body)
     .then(() => res.status(200).send())
     .catch(err => {
       console.error(err)
