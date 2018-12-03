@@ -84,8 +84,9 @@ export function removeProject(
   req: express.Request,
   res: express.Response
 ) {
+  const { puid } = req.params
     return projectsStorage
-        .deleteProjects(req.params.puid)
+        .deleteProject(puid)
         .then(() => res.status(200).send())
         .catch(err => {
             console.error(err);

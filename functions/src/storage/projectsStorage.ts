@@ -36,20 +36,6 @@ export function updateProject(project, puid) {
     delete project.usecases
     const docRef = db.collection('projects').doc(`${puid}`)
     return docRef.update(project)
-    // .then(() => {
-    //   project.usecases.forEach(usecase => {
-    //       const newUcid = usecase.ucid
-    //       delete usecase.ucid
-    //     docRef
-    //       .collection('usecases')
-    //       .doc(newUcid)
-    //       .set(usecase)
-    //       .catch(err => {
-    //         console.log(err)
-    //         throw err
-    //       })
-    //   })
-    // })
     .then(() => puid)
   }
 
@@ -57,7 +43,7 @@ export function updateProject(project, puid) {
  * Delete project with puid
  * @param puid - project identifer
  */
-export  function deleteProjects(puid) {
+export  function deleteProject(puid) {
   console.log(`User has requested to delete path projects/${puid}`)
   return usecasesStorage
     .deleteAllUsecases(`${puid}`)
