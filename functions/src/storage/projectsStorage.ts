@@ -99,7 +99,7 @@ export function getProjectDetails(puid) {
  * @param puid - project id to add user to
  * @param user - user to add to project
  */
-export function addProjectUsers(puid,user) {
+export function addProjectUsers(puid, user) {
     return db
       .collection('projects')
       .doc(puid)
@@ -121,4 +121,18 @@ export function deleteProjectUser(puid,user) {
       .update({
         users: admin.firestore.FieldValue.arrayRemove(user)
     })
+}
+
+/**
+ * Set project owner
+ * @param puid - unique project identifier
+ * @param uuid - unique user identifier
+ */
+export async function setOwnerProject(puid, uuid) {
+  return db
+  .collection('projects')
+  .doc(`${puid}`)
+  .update({
+      owner: `${uuid}`
+  })
 }

@@ -95,19 +95,47 @@ export function removeProject(
 /**
  * share project with other users
  * @param req - express request object
- * @param req.body.puid project id to share
- * @param req.body.users users to share with nad their permissions
+ * @param req.params - url params
+ * @param req.params.puid - project id to delete
+ * @param req.body[] - request body, should be array
+ * @param req.body[].uuid - user id to share with
+ * @param req.body[].permission - user permission level
  * @param res - express response object
  */
 export function shareProjects(req: express.Request, res: express.Response) {
-    const usersToShareTo = req.body.users;
+    const usersToShareTo = req.body;
+    const { puid } = req.params
+
     return usersToShareTo.forEach(newUser => {
-        projectsStorage.addProjectUsers(req.body.puid, newUser)
-        .then(() => usersStorage.addUserProject(newUser.user, req.body.puid))
-        .then(() => res.status(200).send())
+        projectsStorage.addProjectUsers(puid, newUser)
+        .then(() => usersStorage
+          .addUserProject(newUser.user, puid)
+          .then(() => res.status(200).send())
+        )
         .catch(err => {
             console.error(err)
             return res.status(500).send('Server Error')
         })
     });
+}
+
+/**
+ * transfer project to other users
+ * @param req - express request object
+ * @param req.params - url params
+ * @param req.params.puid - project id to delete
+ * @param req.body - user id to share with
+ * @param res - express response object
+ */
+export function transferProjects(req: express.Request, res: express.Response) {
+  const { puid } = req.params
+  const { uuid } = req.body
+
+  return projectsStorage.setOwnerProject(puid, uuid)
+      .then(() => usersStorage.addUserProject(uuid, puid))
+      .then(() => res.status(200).send())
+      .catch(err => {
+          console.error(err)
+          return res.status(500).send('Server Error')
+      })
 }
