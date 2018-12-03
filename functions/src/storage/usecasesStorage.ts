@@ -7,6 +7,26 @@ import { createUsecase } from '../utils'
  **     Storage     **
  *********************/
 
+/**
+ * Get list of usecases for project
+ * @param puid - project id to get usecases for
+ * @returns [usecase]
+ */
+export function readUsecases(puid) {
+  return db
+    .collection('projects')
+    .doc(`${puid}`)
+    .collection('usecases')
+    .get()
+    .then(querySnapshot => {
+      return querySnapshot.docs.map(async (doc) => ({
+        ...doc.data(),
+        ucid: doc.id,
+      })
+      )
+    })
+    .then(usecasePromises => Promise.all(usecasePromises))
+}
 
 /**
  * Add use case to project

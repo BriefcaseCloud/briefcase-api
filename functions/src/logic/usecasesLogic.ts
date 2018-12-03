@@ -3,6 +3,28 @@ import * as express from 'express'
 // Internal Dependencies
 import * as usecasesStorage from '../storage/usecasesStorage'
 
+/**
+ * list usecases use case under project puid
+ * @param req - express request object
+ * @param req.params - request url query params
+ * @param req.params.puid - project id of project containing usecase
+ * @param res - express response object
+ */
+export async function listUsecases(
+  req: express.Request,
+  res: express.Response
+) {
+  console.log(req.params)
+  const { puid } = req.params
+  return usecasesStorage
+    .readUsecases(puid)
+    .then((data) => res.status(200).send(data))
+    .catch(err => {
+      console.error(err)
+      return res.status(500).send('Server Error')
+    })
+}
+
 
 /**
  * Create use case with ucid under project puid

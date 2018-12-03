@@ -95,21 +95,6 @@ export function removeProject(
 }
 
 /**
- * Get basic usecase template
- * @param req - express request object
- * @param res - express response object
- */
-export function getTemplate(req: express.Request, res: express.Response) {
-  return projectsStorage
-    .getTemplate()
-    .then(template => res.status(200).send({ template }))
-    .catch(err => {
-      console.error(err)
-      return res.status(500).send('Server Error')
-    })
-}
-
-/**
  * share project with other users
  * @param req - express request object
  * @param req.body.puid project id to share

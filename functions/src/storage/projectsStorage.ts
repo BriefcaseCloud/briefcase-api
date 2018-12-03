@@ -60,27 +60,6 @@ export  function deleteProject(puid) {
 }
 
 /**
- * Gets project template
- * @param project - project contents to create with
- * @returns project id
- */
-export function getTemplate() {
-  const singleProject: any = {}
-
-  return getProjectDetails('template')
-    .then(data => {
-      singleProject.details = data
-      return getProjectUsecases('template')
-    })
-    .then(useCases => {
-      singleProject.usecases = useCases
-    })
-    .then(() => {
-      return singleProject
-    })
-}
-
-/**
  * Get list of projects for user
  * @param uuid - user id to get projects for
  * @returns [project]
@@ -93,25 +72,7 @@ export function getUserProjectsList(uuid) {
     .then(doc => doc.data().projects)
 }
 
-/**
- * Get list of usecases for project
- * @param puid - project id to get usecases for
- * @returns [usecase]
- */
-export function getProjectUsecases(puid) {
-  return db
-    .collection('projects')
-    .doc(`${puid}`)
-    .collection('usecases')
-    .get()
-    .then(cases => {
-      return cases.docs.map(usecase => {
-          const newUseCase = usecase.data()
-          newUseCase.ucid = usecase.id
-          return newUseCase
-      })
-    })
-}
+
 
 /**
  * Get details of projects

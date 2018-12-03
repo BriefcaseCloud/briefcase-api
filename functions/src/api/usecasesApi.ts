@@ -3,8 +3,9 @@ import * as express from 'express'
 import * as usecasesLogic from '../logic/usecasesLogic'
 
 // Router to be used in the index.ts (sent to firebase functions as api)
-export let usecasesRouter = express.Router()
+export let usecasesRouter = express.Router({"mergeParams": true})
 
+usecasesRouter.get('/', usecasesLogic.listUsecases)
 usecasesRouter.post('/', usecasesLogic.addUsecase)
 usecasesRouter.put('/:ucid', usecasesLogic.saveUsecase)
 usecasesRouter.delete('/:ucid', usecasesLogic.deleteUsecase)
