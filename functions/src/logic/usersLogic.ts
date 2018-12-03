@@ -36,7 +36,7 @@ export function getUsernames(
  * @param res - express response object
  */
 export function signupUser(req: express.Request, res: express.Response) {
-  const { username, password } = req.body
+  const { username, password="defaultpassword" } = req.body
   return usersStorage
     .readUsernames()
     .then(usernames => (usernames.indexOf(username) > -1))

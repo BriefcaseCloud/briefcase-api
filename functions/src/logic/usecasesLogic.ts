@@ -84,8 +84,9 @@ export function deleteUsecase(
   req: express.Request,
   res: express.Response
 ) {
+  const { puid, ucid } = req.params
   return usecasesStorage
-    .deleteUsecase(req.body.puid, req.body.ucid)
+    .deleteUsecase(puid, ucid)
     .then(() => res.status(200).send())
     .catch(err => {
       console.error(err)

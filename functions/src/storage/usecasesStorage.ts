@@ -68,9 +68,9 @@ export function updateUsecase(puid, ucid, usecase) {
 export async function deleteUsecase(puid, ucid) {
   return db
     .collection('projects')
-    .doc(puid)
+    .doc(`${puid}`)
     .collection('usecases')
-    .doc(ucid)
+    .doc(`${ucid}`)
     .delete()
 }
 
