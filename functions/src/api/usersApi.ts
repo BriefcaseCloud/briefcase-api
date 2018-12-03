@@ -5,6 +5,8 @@ import * as usersLogic from '../logic/usersLogic'
 
 // Router to be used in the index.ts (sent to firebase functions as api)
 export const usersRouter = express.Router()
+import withAuthMiddleware from '../middleware/withAuth'
+
 
 /*********************
  **       API       **
@@ -14,6 +16,7 @@ usersRouter.get('/', usersLogic.getUsernames)
 usersRouter.post('/', usersLogic.signupUser)
 usersRouter.delete('/:uuid', usersLogic.removeUser)
 
+// usersRouter.use(withAuthMiddleware)
 usersRouter.get('/:uuid/projects', usersLogic.getProjects)
 usersRouter.post('/:uuid/projects', usersLogic.createProject)
 

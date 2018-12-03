@@ -19,7 +19,9 @@ projectsRouter.put('/:puid', projectsLogic.saveProject)
 projectsRouter.delete('/:puid', projectsLogic.removeProject)
 
 projectsRouter.use('/:puid/usecases', usecasesRouter)
+
 projectsRouter.post('/:puid/share', projectsLogic.shareProjects) //body: {id: (id of project), users: [{user: (id of user), permissions: (user permissions)}]}
+projectsRouter.post('/:puid/transfer', projectsLogic.transferProjects) //body: {id: (id of project), users: [{user: (id of user), permissions: (user permissions)}]}
 
 // Intercept un-matched routes,
 projectsRouter.get('*', async (req: express.Request, res: express.Response) => {
