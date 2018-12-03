@@ -6,9 +6,15 @@ export const DEFAULT_AUTH = {
   password: '',
 }
 
+export const ROLES = {
+  admin: 'admin',
+  user: 'user',
+}
+
 export const DEFAULT_USER = {
   username: '',
   projects: [],
+  role: ROLES.user,
 }
 
 export const PERMISSIONS = {

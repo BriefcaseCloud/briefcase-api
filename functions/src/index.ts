@@ -24,7 +24,6 @@ app.use(bodyParser.json())
 app.use('/auth', authRouter)
 app.use('/users', usersRouter)
 app.use('/projects', projectsRouter)
-app.use('/projects/:puid/usecases', usecasesRouter)
 app.use(withAuthMiddleware)
 
 // Any unmatched base route will result in 404
