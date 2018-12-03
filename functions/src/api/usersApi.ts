@@ -15,6 +15,7 @@ usersRouter.post('/', usersLogic.signupUser)
 usersRouter.delete('/:uuid', usersLogic.removeUser)
 
 usersRouter.get('/:uuid/projects', usersLogic.getProjects)
+usersRouter.post('/:uuid/projects', usersLogic.createProject)
 
 // Intercept un-matched routes,
 usersRouter.get('*', async (req: express.Request, res: express.Response) => {

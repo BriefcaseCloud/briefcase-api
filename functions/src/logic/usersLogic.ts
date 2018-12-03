@@ -14,7 +14,7 @@ import * as projectsStorage from '../storage/projectsStorage'
  * @param req - express request object
  * @param res - express response object
  */
-export async function getUsernames(
+export function getUsernames(
   req: express.Request,
   res: express.Response
 ) {
@@ -35,7 +35,7 @@ export async function getUsernames(
  * @param req.body.password - password
  * @param res - express response object
  */
-export async function signupUser(req: express.Request, res: express.Response) {
+export function signupUser(req: express.Request, res: express.Response) {
   const { username, password } = req.body
   return usersStorage
     .readUsernames()
@@ -66,7 +66,7 @@ export async function signupUser(req: express.Request, res: express.Response) {
  * @param req.params.uuid - unique user id to delete
  * @param res - express response object
  */
-export async function removeUser(req: express.Request, res: express.Response) {
+export function removeUser(req: express.Request, res: express.Response) {
   const { uuid } = req.params
   return usersStorage
     .deleteUser(uuid)
@@ -86,7 +86,7 @@ export async function removeUser(req: express.Request, res: express.Response) {
  * @param req.params.uuid - unique user id to get projects for
  * @param res - express response object
  */
-export async function getProjects(req: express.Request, res: express.Response) {
+export function getProjects(req: express.Request, res: express.Response) {
   const { uuid } = req.params
   return usersStorage
     .readUser(uuid)
@@ -97,6 +97,25 @@ export async function getProjects(req: express.Request, res: express.Response) {
       }))
     )
     .then((projects) => res.status(200).send({projects}))
+    .catch(err => {
+      console.error(err)
+      return res.status(500).send('Server Error')
+    })
+}
+
+/**
+ * Get projects for user
+ * @param req - express request object
+ * @param req.params - request url params
+ * @param req.params.uuid - unique user id to get projects for
+ * @param res - express response object
+ */
+export function createProject(req: express.Request, res: express.Response) {
+  const { uuid } = req.params
+  return projectsStorage
+    .createProject(uuid)
+    .then(puid => projectsStorage.getProjectDetails(puid))
+    .then((project) => res.status(200).send({project}))
     .catch(err => {
       console.error(err)
       return res.status(500).send('Server Error')

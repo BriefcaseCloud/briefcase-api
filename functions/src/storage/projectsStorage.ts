@@ -2,6 +2,7 @@
 import * as admin from 'firebase-admin'
 const db = admin.firestore()
 import * as usecasesStorage from './usecasesStorage'
+import { createProject as createDefaultProject } from '../utils'
 
 /*********************
  **     Storage     **
@@ -9,26 +10,15 @@ import * as usecasesStorage from './usecasesStorage'
 
  /**
  * Creates new project with details
- * @param project - project contents to create with
+ * @param uuid - user id to associate with project
  * @returns project id
  */
-export function createProject(project) {
-  delete project.puid
-  delete project.usecases
+export function createProject(uuid) {
   const docRef = db.collection('projects').doc()
-  return docRef.set(project).then(() => docRef.id)
-  // .then(() => {
-  //   project.usecases.forEach(usecase => {
-  //     docRef
-  //       .collection('usecases')
-  //       .add(usecase)
-  //       .catch(err => {
-  //         console.error(err)
-  //         throw err
-  //       })
-  //   })
-  //   return docRef.id
-  // })
+  return docRef
+    .set(createDefaultProject(uuid, "", ""))
+    .then(() => db.collection('projects').doc(docRef.id).get())
+    .then((doc) => docRef.id)
 }
 
  /**
