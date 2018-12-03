@@ -1,4 +1,4 @@
-import { DEFAULT_USER_PERMISSION, DEFAULT_PROJECT, PERMISSIONS, DEFAULT_AUTH, DEFAULT_USER } from './constants'
+import { DEFAULT_USER_PERMISSION, DEFAULT_PROJECT, PERMISSIONS, DEFAULT_AUTH, DEFAULT_USER, DEFAULT_USECASE } from './constants'
 
 export function createAuth(username, password) {
     return {
@@ -35,4 +35,11 @@ export function createProject(owner, title, users) {
             .map(name => createUserPermission(name, PERMISSIONS.write)),
       )
   }
+}
+
+export function createUsecase(ucid) {
+    return {
+        ...DEFAULT_USECASE,
+        ucid
+    }
 }
