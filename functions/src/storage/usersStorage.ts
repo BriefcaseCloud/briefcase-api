@@ -16,15 +16,16 @@ export async function userExists(uuid) {
  * Get usernames of all platform members
  * @returns [username]
  */
-export function readUsernames(): Promise<Array<String>> {
+export function readUsernames() {
   return db
     .collection('users')
     .get()
     .then((querySnapshot: FirebaseFirestore.QuerySnapshot) => {
       if (querySnapshot.empty) return []
       return querySnapshot.docs.map(
-        (doc: FirebaseFirestore.QueryDocumentSnapshot) =>
-          doc.data().username
+        (doc: FirebaseFirestore.QueryDocumentSnapshot) => {
+            return {username: doc.data().username, uuid: doc.id}
+        }
       )
     })
 }
