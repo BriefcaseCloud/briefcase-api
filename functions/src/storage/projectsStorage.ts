@@ -85,6 +85,13 @@ export function getProjectDetails(puid) {
     .doc(`${puid}`)
     .get()
     .then(doc => doc.data())
+    .then(project => (
+      usecasesStorage.readUsecases(puid)
+      .then(usecases => ({
+        ...project,
+        usecases
+      }))
+    ))
 }
 
 /**

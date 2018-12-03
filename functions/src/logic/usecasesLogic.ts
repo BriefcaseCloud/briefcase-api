@@ -14,7 +14,6 @@ export async function listUsecases(
   req: express.Request,
   res: express.Response
 ) {
-  console.log(req.params)
   const { puid } = req.params
   return usecasesStorage
     .readUsecases(puid)
@@ -37,7 +36,6 @@ export async function addUsecase(
   req: express.Request,
   res: express.Response
 ) {
-  // console.log(req.query.uuid)
   return usecasesStorage
     .addUsecase(req.params.puid)
     .then((ref) => ref.get().then(doc => doc.data()))
@@ -62,7 +60,6 @@ export function saveUsecase(
   req: express.Request,
   res: express.Response
 ) {
-  // console.log(req.query.uuid)
   return usecasesStorage
     .updateUsecase(req.params.puid, req.params.ucid, req.body.usecase)
     .then(() => res.status(200).send())
