@@ -1,6 +1,7 @@
 // External Dependencies
 import * as admin from 'firebase-admin'
 const db = admin.firestore()
+import { createUsecase } from '../utils'
 
 /*********************
  **     Storage     **
@@ -12,25 +13,43 @@ const db = admin.firestore()
  * @param puid - project unique identifier
  * @param usecase - usecase content to save
  */
-export async function addUseCase(puid, usecase) {
+export function addUsecase(puid) {
   return db
     .collection('projects')
-    .doc(puid)
+    .doc(`${puid}`)
     .collection('usecases')
-    .add(usecase)
+    .add({})
+    .then(doc => {
+      doc.set(createUsecase(doc.id))
+      return doc
+    })
+}
+
+/**
+ * Update usecase in project
+ * @param puid - project unique identifier
+ * @param usecase - usecase content to save
+ */
+export function updateUsecase(puid, ucid, usecase) {
+  return db
+    .collection('projects')
+    .doc(`${puid}`)
+    .collection('usecases')
+    .doc(`${ucid}`)
+    .update(usecase)
 }
 
 /**
  * Delete usecase on project
  * @param puid - project unique identifier
- * @param ucuid - usecase unique identifier
+ * @param ucid - usecase unique identifier
  */
-export async function deleteUseCase(puid, ucuid) {
+export async function deleteUsecase(puid, ucid) {
   return db
     .collection('projects')
     .doc(puid)
     .collection('usecases')
-    .doc(ucuid)
+    .doc(ucid)
     .delete()
 }
 
@@ -38,7 +57,7 @@ export async function deleteUseCase(puid, ucuid) {
  * Delete all usecase in project
  * @param puid - project unique identifier
  */
-export async function deleteAllUseCases(puid) {
+export async function deleteAllUsecases(puid) {
   const path = `projects/${puid}/usecases`
   const snapshot = await db.collection(path).get()
   return snapshot.docs.map(doc => doc.ref.delete())
