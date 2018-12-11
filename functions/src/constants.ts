@@ -1,20 +1,20 @@
 // Set token expiration to 1 day
 export const TOKEN_EXPIRATION = 86400
 
-export const DEFAULT_AUTH = {
-  username: '',
-  password: '',
-}
-
 export const ROLES = {
   admin: 'admin',
   user: 'user',
 }
 
+export const DEFAULT_AUTH = {
+  username: '',
+  password: '',
+  role: ROLES.user,
+}
+
 export const DEFAULT_USER = {
   username: '',
   projects: [],
-  role: ROLES.user,
 }
 
 export const PERMISSIONS = {

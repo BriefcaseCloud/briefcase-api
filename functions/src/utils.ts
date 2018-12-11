@@ -1,4 +1,4 @@
-import { DEFAULT_USER_PERMISSION, DEFAULT_PROJECT, PERMISSIONS, DEFAULT_AUTH, DEFAULT_USER, DEFAULT_USECASE } from './constants'
+import { DEFAULT_USER_PERMISSION, DEFAULT_PROJECT, PERMISSIONS, DEFAULT_AUTH, DEFAULT_USER, DEFAULT_USECASE, ROLES } from './constants'
 
 export function createAuth(username, password) {
     return {
@@ -8,7 +8,7 @@ export function createAuth(username, password) {
     }
 }
 
-export function createUser(username) {
+export function createUser(username, admin=false) {
     return {
         ...DEFAULT_USER,
         username

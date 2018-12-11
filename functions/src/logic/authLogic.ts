@@ -32,7 +32,11 @@ export async function verifyUser(req: express.Request, res: express.Response) {
         return usersStorage
           .updateUser(record.id)
           .then(() => authStorage.createToken(record.id))
-          .then(token => res.status(200).send({ token, id: record.id, isAdmin: record.obj.role === ROLES.admin ? true : false }))
+          .then(token => res.status(200).send({
+            token,
+            id: record.id,
+            isAdmin: record.obj.role === ROLES.admin ? true : false
+          }))
         // 401 since password doesn't match
       } else {
         return res.status(401).send('invalid password')
